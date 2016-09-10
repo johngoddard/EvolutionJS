@@ -69,6 +69,7 @@ In addition to the webpack entry file, there will be four scripts involved in th
 
 - Learn highcharts API
 - Render graphs on the page with live updating population and average speed information.
+- Fine tune simulation initialization
 
 
 **Day 4**: Add simulation controls.  Style the frontend, and add an introdution:
