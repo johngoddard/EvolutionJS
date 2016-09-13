@@ -57,26 +57,26 @@ In addition to the webpack entry file, there will be four scripts involved in th
 
 **Day 1**: Setup all necessary Node modules, including getting webpack up and running. Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above.  Goals for the day:
 
-- Get a green bundle with `webpack`
-- Render a canvas with moving predators and pray.
+- [x] Get a green bundle with `webpack`
+- [x] Render a canvas with moving predators and pray.
 
 **Day 2**: Handle collision and dying events in the simulation. Set up recording population / average speed data.
 
-- Complete the `predator.js` and `prey.js` classes, including inheritance models and AI for movement
-- Record data at every step (log it in console for now)
+- [x] Complete the `predator.js` and `prey.js` classes, including inheritance models and AI for movement
+- [x] Record data at every step (log it in console for now)
 
 **Day 3**: Live updating graphs.
 
-- Learn highcharts API
-- Render graphs on the page with live updating population and average speed information.
-- Fine tune simulation initialization
+- [ ] Learn highcharts API
+- [ ] Render graphs on the page with live updating population and average speed information.
+- [ ] Fine tune simulation initialization
 
 
 **Day 4**: Add simulation controls.  Style the frontend, and add an introdution:
 
-- Create controls for simulation speed, mutation rate, and generation time
-- Syle objects
-- Add an information modal.
+- [ ] Create controls for simulation speed, mutation rate, and generation time
+- [ ] Syle objects
+- [ ] Add an information modal.
 
 
 ### Bonus features

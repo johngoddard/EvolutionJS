@@ -54,14 +54,24 @@
 	
 	var _simulation_view2 = _interopRequireDefault(_simulation_view);
 	
+	var _chart = __webpack_require__(7);
+	
+	var _chart2 = _interopRequireDefault(_chart);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	window.addEventListener('DOMContentLoaded', function () {
-	  var canvas = document.getElementById('simulation-canvas');
-	  var context = canvas.getContext('2d');
-	  var simulation = new _simulation2.default(500, 500, 5, 10);
-	  var simulationView = new _simulation_view2.default(simulation, context);
-	  simulationView.start();
+	    var canvas = document.getElementById('simulation-canvas');
+	    var context = canvas.getContext('2d');
+	    var simulation = new _simulation2.default(500, 500, 3, 30);
+	    var simulationView = new _simulation_view2.default(simulation, context);
+	    Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
+	
+	    simulationView.start();
 	});
 
 /***/ },
@@ -84,11 +94,17 @@
 	
 	var _predator2 = _interopRequireDefault(_predator);
 	
+	var _chart = __webpack_require__(7);
+	
+	var _chart2 = _interopRequireDefault(_chart);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var COLORS = ['blue', 'green', 'aqua', 'bisque', 'violet', 'chartreuse', 'deeppink', 'orange'];
 	
 	var Simulation = function () {
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
@@ -100,36 +116,47 @@
 	    this.initialPrey = initialPrey;
 	    this.predators = [];
 	    this.prey = [];
+	    this.steps = 0;
+	    this.mutationRate = .03;
+	    this.mutantIdx = 0;
+	    this.data = [];
+	    this.preyGeneration = 250;
 	
 	    while (this.prey.length < this.initialPrey) {
-	      this.addPrey();
+	      this.addPrey(2, 'blue', 'original');
 	    }
 	
 	    while (this.predators.length < this.initialPredators) {
 	      this.addPredator();
 	    }
+	
+	    this.charter = new _chart2.default(this);
 	  }
 	
 	  _createClass(Simulation, [{
 	    key: 'addPrey',
-	    value: function addPrey() {
-	      this.prey.push(new _prey2.default({
-	        pos: this.randomPosition(),
-	        velocity: [10 * (.5 - Math.random()), 10 * (.5 - Math.random())],
-	        radius: 5,
-	        color: 'blue',
-	        simulation: this
-	      }));
+	    value: function addPrey(speed, color, strain) {
+	      if (this.prey.length < 100) {
+	        this.prey.push(new _prey2.default({
+	          pos: this.randomPosition(),
+	          speed: speed,
+	          radius: 5,
+	          color: color,
+	          simulation: this,
+	          strain: strain
+	        }));
+	      }
 	    }
 	  }, {
 	    key: 'addPredator',
 	    value: function addPredator() {
 	      this.predators.push(new _predator2.default({
 	        pos: this.randomPosition(),
-	        velocity: [10 * (.5 - Math.random()), 10 * (.5 - Math.random())],
+	        speed: 2.7,
 	        radius: 10,
 	        color: 'red',
-	        simulation: this
+	        simulation: this,
+	        mutationRate: .03
 	      }));
 	    }
 	  }, {
@@ -149,6 +176,114 @@
 	    key: 'step',
 	    value: function step() {
 	      this.moveAnimals();
+	      this.handleCollisions();
+	      this.reproduce();
+	      this.die();
+	      if (this.steps % 250 === 0) {
+	        this.recordData(this.steps / 250);
+	      }
+	
+	      this.steps++;
+	    }
+	  }, {
+	    key: 'recordData',
+	    value: function recordData(generation) {
+	      var strainInfo = this.getStrainInfo();
+	      var avgSpeed = this.getAverageSpeed();
+	
+	      this.data.push({
+	        generation: generation,
+	        predators: this.predators.length,
+	        prey: this.prey.length,
+	        dominantStrain: strainInfo[1],
+	        numStrains: strainInfo[0],
+	        strains: strainInfo[2],
+	        averageSpeed: avgSpeed
+	      });
+	    }
+	  }, {
+	    key: 'getStrainInfo',
+	    value: function getStrainInfo() {
+	      var strains = {};
+	      var strainCount = 0;
+	
+	      this.prey.forEach(function (preyObj) {
+	        if (strains[preyObj.strain]) {
+	          strains[preyObj.strain] = strains[preyObj.strain] + 1;
+	        } else {
+	          strains[preyObj.strain] = 1;
+	          strainCount += 1;
+	        }
+	      });
+	
+	      var maxCount = 0;
+	      var maxStrain = null;
+	
+	      Object.keys(strains).forEach(function (strain) {
+	        if (strains[strain] > maxCount) {
+	          maxStrain = strain;
+	          maxCount = strains[strain];
+	        }
+	      });
+	
+	      return [strainCount, maxStrain, strains];
+	    }
+	  }, {
+	    key: 'getAverageSpeed',
+	    value: function getAverageSpeed() {
+	      var total = 0;
+	      this.prey.forEach(function (preyObj) {
+	        total += preyObj.speed;
+	      });
+	      return total / this.prey.length;
+	    }
+	  }, {
+	    key: 'reproduce',
+	    value: function reproduce() {
+	      var _this = this;
+	
+	      this.prey.forEach(function (preyObj) {
+	
+	        if (preyObj.steps % _this.preyGeneration === 0 && preyObj.steps > 0) {
+	          var mutationNum = Math.random();
+	
+	          if (mutationNum > .97) {
+	            _this.mutantIdx += 1;
+	            var newSpeed = preyObj.speed + .25;
+	            _this.addPrey(newSpeed, COLORS[_this.mutantIdx % COLORS.length], 'strain-' + _this.mutantIdx);
+	          } else if (mutationNum < .03) {
+	            _this.mutantIdx += 1;
+	            var _newSpeed = preyObj.speed - .25;
+	            _this.addPrey(_newSpeed, COLORS[(_this.mutantIdx % COLORS.length, 'strain-' + _this.mutantIdx)]);
+	          } else {
+	            var _newSpeed2 = preyObj.speed + .1 * (.5 - Math.random());
+	            _this.addPrey(_newSpeed2, preyObj.color, preyObj.strain);
+	          }
+	        }
+	      });
+	
+	      this.predators.forEach(function (predObj) {
+	        if (predObj.steps % 300 === 0 && predObj.steps > 0) {
+	          _this.addPredator();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'die',
+	    value: function die() {
+	      var simulation = this;
+	
+	      this.predators.forEach(function (predObj) {
+	        if (predObj.sinceFood > 175 || predObj.steps > 2000) {
+	          simulation.remove(predObj, 'predator');
+	        }
+	      });
+	
+	      this.prey.forEach(function (preyObj) {
+	        if (preyObj.steps > 650) {
+	          simulation.remove(preyObj, 'prey');
+	        }
+	      });
 	    }
 	  }, {
 	    key: 'moveAnimals',
@@ -177,6 +312,38 @@
 	      var y = (pos[1] + this.DIM_Y) % this.DIM_Y;
 	      return [x, y];
 	    }
+	  }, {
+	    key: 'handleCollisions',
+	    value: function handleCollisions() {
+	      var _this2 = this;
+	
+	      var toRemove = [];
+	
+	      var simulation = this;
+	      this.prey.forEach(function (preyObj) {
+	        simulation.predators.forEach(function (predObj) {
+	          if (preyObj.isTouching(predObj) && !toRemove.includes(preyObj)) {
+	            predObj.resetSinceFood();
+	            toRemove.push(preyObj);
+	          }
+	        });
+	      });
+	
+	      toRemove.forEach(function (item) {
+	        _this2.remove(item, 'prey');
+	      });
+	    }
+	  }, {
+	    key: 'remove',
+	    value: function remove(animal, type) {
+	      if (type === 'prey') {
+	        var idx = this.prey.indexOf(animal);
+	        this.prey.splice(idx, 1);
+	      } else {
+	        var _idx = this.predators.indexOf(animal);
+	        this.predators.splice(_idx, 1);
+	      }
+	    }
 	  }]);
 	
 	  return Simulation;
@@ -194,9 +361,17 @@
 	  value: true
 	});
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _animal = __webpack_require__(3);
 	
 	var _animal2 = _interopRequireDefault(_animal);
+	
+	var _utils = __webpack_require__(4);
+	
+	var UTIL = _interopRequireWildcard(_utils);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -214,6 +389,35 @@
 	
 	    return _possibleConstructorReturn(this, (Prey.__proto__ || Object.getPrototypeOf(Prey)).call(this, options));
 	  }
+	
+	  _createClass(Prey, [{
+	    key: 'setVelocity',
+	    value: function setVelocity() {
+	      if (this.steps % 15 === 0 || this.steps < 10) {
+	        var closestPred = this.findClosestPredator();
+	        var dir = UTIL.findDirection(this.position, closestPred.position);
+	        this.velocity = [-this.speed * dir[0], -this.speed * dir[1]];
+	      }
+	    }
+	  }, {
+	    key: 'findClosestPredator',
+	    value: function findClosestPredator() {
+	      var prey = this;
+	
+	      var closest = void 0;
+	      var minDistance = 100000;
+	
+	      this.simulation.predators.forEach(function (predator) {
+	        var distance = UTIL.distance(prey.position, predator.position);
+	        if (distance < minDistance) {
+	          minDistance = distance;
+	          closest = predator;
+	        }
+	      });
+	
+	      return closest;
+	    }
+	  }]);
 	
 	  return Prey;
 	}(_animal2.default);
@@ -234,9 +438,9 @@
 	
 	var _utils = __webpack_require__(4);
 	
-	var _utils2 = _interopRequireDefault(_utils);
+	var UTIL = _interopRequireWildcard(_utils);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -245,16 +449,19 @@
 	    _classCallCheck(this, Animal);
 	
 	    this.position = options['pos'];
-	    this.velocity = options['velocity'];
+	    this.speed = options['speed'];
 	    this.radius = options['radius'];
 	    this.color = options['color'];
 	    this.simulation = options['simulation'];
+	    this.velocity = [0, 0];
+	    this.steps = 0;
+	    this.strain = options['strain'];
 	  }
 	
 	  _createClass(Animal, [{
 	    key: 'isTouching',
 	    value: function isTouching(otherAnimal) {
-	      if (_utils2.default.distance(this.pos, otherAnimal.pos) < this.radius + otherAnimal.radius) {
+	      if (UTIL.distance(this.position, otherAnimal.position) < this.radius + otherAnimal.radius) {
 	        return true;
 	      }
 	      return false;
@@ -262,6 +469,8 @@
 	  }, {
 	    key: 'move',
 	    value: function move() {
+	      this.steps++;
+	      this.setVelocity();
 	      this.position[0] += this.velocity[0];
 	      this.position[1] += this.velocity[1];
 	      if (this.simulation.isOutOfBounds(this.position)) {
@@ -289,25 +498,59 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var Util = {
-	  inherits: function inherits(childClass, parentClass) {
-	    function Surrogate() {}
-	    Surrogate.prototype = parentClass.prototype;
-	    childClass.prototype = new Surrogate();
-	    childClass.prototype.constructor = childClass;
-	  },
+	var diff = exports.diff = function diff(pos1, pos2, dir) {
 	
-	  distance: function distance(pos1, pos2) {
-	    return Math.sqrt(Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2));
+	  var idx = dir === 'x' ? 0 : 1;
+	
+	  if (Math.abs(pos2[idx] - pos1[idx]) > 250) {
+	    if (pos2[idx] > 250) {
+	      return pos2[idx] - 500 - pos1[idx];
+	    } else {
+	      return 500 + pos2[idx] - pos1[idx];
+	    }
+	  } else {
+	    return pos2[idx] - pos1[idx];
 	  }
 	};
 	
-	exports.default = Util;
+	var dir = exports.dir = function dir(pos1, pos2, _dir) {
+	  var idx = _dir === 'x' ? 0 : 1;
+	  if (pos1[idx] < pos2[idx]) {
+	    if (pos2[idx] - pos1[idx] < pos1[idx] + 500 - pos2[idx]) {
+	      return 1;
+	    } else {
+	      return -1;
+	    }
+	  } else {
+	    if (pos1[idx] - pos2[idx] < pos2[idx] + 500 - pos1[idx]) {
+	      return -1;
+	    } else {
+	      return 1;
+	    }
+	  }
+	};
+	
+	var distance = exports.distance = function distance(pos1, pos2) {
+	  var xDiff = diff(pos1, pos2, 'x');
+	  var yDiff = diff(pos1, pos2, 'y');
+	
+	  return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+	};
+	
+	var findDirection = exports.findDirection = function findDirection(pos1, pos2) {
+	  var posDiff = [diff(pos1, pos2, 'x'), diff(pos1, pos2, 'y')];
+	
+	  var xDir = dir(pos1, pos2, 'x');
+	  var yDir = dir(pos1, pos2, 'y');
+	
+	  var magnitude = Math.pow(posDiff[0], 2) + Math.pow(posDiff[1], 2);
+	  return [xDir * Math.pow(posDiff[0], 2) / magnitude, yDir * Math.pow(posDiff[1], 2) / magnitude];
+	};
 
 /***/ },
 /* 5 */
@@ -319,9 +562,17 @@
 	  value: true
 	});
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _animal = __webpack_require__(3);
 	
 	var _animal2 = _interopRequireDefault(_animal);
+	
+	var _utils = __webpack_require__(4);
+	
+	var UTIL = _interopRequireWildcard(_utils);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -337,8 +588,47 @@
 	  function Predator(options) {
 	    _classCallCheck(this, Predator);
 	
-	    return _possibleConstructorReturn(this, (Predator.__proto__ || Object.getPrototypeOf(Predator)).call(this, options));
+	    var _this = _possibleConstructorReturn(this, (Predator.__proto__ || Object.getPrototypeOf(Predator)).call(this, options));
+	
+	    _this.sinceFood = 0;
+	    return _this;
 	  }
+	
+	  _createClass(Predator, [{
+	    key: 'setVelocity',
+	    value: function setVelocity() {
+	      if (this.steps % 5 === 0 || this.steps < 10) {
+	        var closestPred = this.findClosestPrey();
+	        var dir = UTIL.findDirection(this.position, closestPred.position);
+	        this.velocity = [this.speed * dir[0], this.speed * dir[1]];
+	      }
+	
+	      this.sinceFood++;
+	    }
+	  }, {
+	    key: 'findClosestPrey',
+	    value: function findClosestPrey() {
+	      var predator = this;
+	
+	      var closest = void 0;
+	      var minDistance = 100000;
+	
+	      this.simulation.prey.forEach(function (prey) {
+	        var distance = UTIL.distance(predator.position, prey.position);
+	        if (distance < minDistance) {
+	          minDistance = distance;
+	          closest = prey;
+	        }
+	      });
+	
+	      return closest;
+	    }
+	  }, {
+	    key: 'resetSinceFood',
+	    value: function resetSinceFood() {
+	      this.sinceFood = 0;
+	    }
+	  }]);
 	
 	  return Predator;
 	}(_animal2.default);
@@ -383,6 +673,101 @@
 	}();
 	
 	exports.default = SimulationView;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Charter = function () {
+	    function Charter(simulation) {
+	        _classCallCheck(this, Charter);
+	
+	        this.simulation = simulation;
+	        this.renderChart();
+	        this.maxGen = 0;
+	    }
+	
+	    _createClass(Charter, [{
+	        key: 'renderChart',
+	        value: function renderChart() {
+	            var simulation = this.simulation;
+	            var charter = this;
+	            $('#pop-graph').highcharts({
+	                chart: {
+	                    type: 'spline',
+	                    animation: Highcharts.svg,
+	                    marginRight: 10,
+	                    events: {
+	                        load: function load() {
+	                            var series = this.series[0];
+	                            setInterval(function () {
+	                                var latest = simulation.data.slice(-1)[0];
+	
+	                                if (latest.generation > charter.maxGen) {
+	                                    charter.maxGen = latest.generation;
+	                                    console.log(latest.generation);
+	                                    console.log(latest.prey);
+	                                    series.addPoint([latest.generation, latest.prey], true, false);
+	                                    console.log(series);
+	                                }
+	                            }, 1000);
+	                        }
+	                    }
+	                },
+	                title: {
+	                    text: 'Prey Population'
+	                },
+	                xAxis: {
+	                    title: {
+	                        text: 'Prey Population'
+	                    },
+	                    tickPixelInterval: 150
+	                },
+	                yAxis: {
+	                    title: {
+	                        text: 'Value'
+	                    },
+	                    plotLines: [{
+	                        value: 0,
+	                        width: 1,
+	                        color: '#808080'
+	                    }]
+	                },
+	                tooltip: {
+	                    formatter: function formatter() {
+	                        return '<b>' + this.series.name + '</b><br/>' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2);
+	                    }
+	                },
+	                legend: {
+	                    enabled: false
+	                },
+	                exporting: {
+	                    enabled: false
+	                },
+	                series: [{
+	                    name: 'Population Data',
+	                    data: function () {
+	                        return [[0, 30]];
+	                    }()
+	                }]
+	            });
+	        }
+	    }]);
+	
+	    return Charter;
+	}();
+	
+	exports.default = Charter;
 
 /***/ }
 /******/ ]);
