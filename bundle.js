@@ -104,7 +104,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var COLORS = ['blue', 'green', 'aqua', 'bisque', 'violet', 'chartreuse', 'deeppink', 'orange'];
+	var MUTANT_COLORS = ['green', 'aqua', 'bisque', 'violet', 'chartreuse', 'deeppink', 'orange'];
 	
 	var Simulation = function () {
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
@@ -119,7 +119,7 @@
 	    this.steps = 0;
 	    this.mutationRate = .03;
 	    this.mutantIdx = 0;
-	    this.data = [];
+	    this.data = null;
 	    this.preyGeneration = 200;
 	    this.predGeneration = 350;
 	
@@ -211,9 +211,14 @@
 	
 	      this.prey.forEach(function (preyObj) {
 	        if (strains[preyObj.strain]) {
-	          strains[preyObj.strain] = strains[preyObj.strain] + 1;
+	          strains[preyObj.strain].population += 1;
+	          strains[preyObj.strain].totalSpeed += preyObj.speed;
 	        } else {
-	          strains[preyObj.strain] = 1;
+	          strains[preyObj.strain] = {
+	            population: 1,
+	            totalSpeed: preyObj.speed,
+	            color: preyObj.color
+	          };
 	          strainCount += 1;
 	        }
 	      });
@@ -222,9 +227,9 @@
 	      var maxStrain = null;
 	
 	      Object.keys(strains).forEach(function (strain) {
-	        if (strains[strain] > maxCount) {
+	        if (strains[strain].population > maxCount) {
 	          maxStrain = strain;
-	          maxCount = strains[strain];
+	          maxCount = strains[strain].population;
 	        }
 	      });
 	
@@ -255,13 +260,21 @@
 	          if (mutationNum > .97) {
 	            _this.mutantIdx += 1;
 	            var newSpeed = preyObj.speed + .25;
-	            _this.addPrey(newSpeed, COLORS[_this.mutantIdx % COLORS.length], 'strain-' + _this.mutantIdx);
+	            var strainName = 'strain-' + _this.mutantIdx;
+	
+	            _this.addPrey(newSpeed, MUTANT_COLORS[_this.mutantIdx % MUTANT_COLORS.length], strainName);
 	          } else if (mutationNum < .03) {
 	            _this.mutantIdx += 1;
 	            var _newSpeed = preyObj.speed - .25;
-	            _this.addPrey(_newSpeed, COLORS[(_this.mutantIdx % COLORS.length, 'strain-' + _this.mutantIdx)]);
+	            var _strainName = 'strain-' + _this.mutantIdx;
+	
+	            _this.addPrey(_newSpeed, MUTANT_COLORS[(_this.mutantIdx % MUTANT_COLORS.length, _strainName)]);
 	          } else {
 	            var _newSpeed2 = preyObj.speed + .1 * (.5 - Math.random());
+	
+	            if (!preyObj.strain) {
+	              console.log('undefined here');
+	            }
 	            _this.addPrey(_newSpeed2, preyObj.color, preyObj.strain);
 	          }
 	        }
@@ -306,7 +319,7 @@
 	      });
 	
 	      this.prey.forEach(function (preyObj) {
-	        if (preyObj.steps > 600) {
+	        if (preyObj.steps > 600 || !preyObj.strain) {
 	          simulation.remove(preyObj, 'prey');
 	        }
 	      });
@@ -749,13 +762,16 @@
 	        },
 	        tooltip: {
 	          formatter: function formatter() {
-	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y);
+	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y.toFixed(2));
 	          }
 	        },
 	        legend: {
 	          enabled: true
 	        },
 	        exporting: {
+	          enabled: false
+	        },
+	        credits: {
 	          enabled: false
 	        },
 	        series: [{
@@ -829,13 +845,16 @@
 	        },
 	        tooltip: {
 	          formatter: function formatter() {
-	            return '<b>' + 'Average Prey Fitness' + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Average speed: ' + this.y);
+	            return '<b>' + 'Average Prey Fitness' + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Average speed: ' + this.y.toFixed(3));
 	          }
 	        },
 	        legend: {
 	          enabled: false
 	        },
 	        exporting: {
+	          enabled: false
+	        },
+	        credits: {
 	          enabled: false
 	        },
 	        series: [{
@@ -857,7 +876,7 @@
 /* 7 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -873,14 +892,24 @@
 	
 	    this.simulation = simulation;
 	    this.ctx = ctx;
+	    this.maxGen = 0;
 	  }
 	
 	  _createClass(SimulationView, [{
-	    key: "start",
+	    key: 'start',
 	    value: function start() {
 	      var _this = this;
 	
 	      var view = this;
+	
+	      setInterval(function () {
+	        var latest = view.simulation.data;
+	
+	        if (latest.generation > view.maxGen) {
+	          view.maxGen = latest.generation;
+	          view.updateStrainTable();
+	        }
+	      }, 1000);
 	
 	      this.simulationID = window.setInterval(function () {
 	        view.simulation.draw(view.ctx);
@@ -889,6 +918,32 @@
 	          window.clearInterval(_this.simulationID);
 	        }
 	      }, 30);
+	    }
+	  }, {
+	    key: 'updateStrainTable',
+	    value: function updateStrainTable() {
+	
+	      var topStrains = this.getTopStrains();
+	      $('#top-strains-body').empty();
+	
+	      topStrains.forEach(function (strain) {
+	        $('#top-strains-body').append('<tr>\n          <td>\n            <div class="strain-key" style="background:' + strain.color + '"></div>\n            ' + strain.name + '\n          </td>\n          <td>' + strain.population + '</td>\n          <td>' + (strain.totalSpeed / strain.population).toFixed(3) + '</td>\n        </tr>');
+	      });
+	
+	      $('#table-tile').text('Top Strains: Generation ' + this.maxGen);
+	    }
+	  }, {
+	    key: 'getTopStrains',
+	    value: function getTopStrains() {
+	      var strains = this.simulation.data.strains;
+	
+	      var strainArray = Object.keys(strains).map(function (strainName) {
+	        return Object.assign({}, strains[strainName], { name: strainName });
+	      });
+	
+	      return strainArray.sort(function (s1, s2) {
+	        return s2.population - s1.population;
+	      }).slice(0, 5);
 	    }
 	  }]);
 	
