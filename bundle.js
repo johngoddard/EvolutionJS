@@ -50,11 +50,11 @@
 	
 	var _simulation2 = _interopRequireDefault(_simulation);
 	
-	var _simulation_view = __webpack_require__(6);
+	var _simulation_view = __webpack_require__(7);
 	
 	var _simulation_view2 = _interopRequireDefault(_simulation_view);
 	
-	var _chart = __webpack_require__(7);
+	var _chart = __webpack_require__(6);
 	
 	var _chart2 = _interopRequireDefault(_chart);
 	
@@ -63,7 +63,7 @@
 	window.addEventListener('DOMContentLoaded', function () {
 	    var canvas = document.getElementById('simulation-canvas');
 	    var context = canvas.getContext('2d');
-	    var simulation = new _simulation2.default(500, 500, 3, 30);
+	    var simulation = new _simulation2.default(500, 500, 5, 30);
 	    var simulationView = new _simulation_view2.default(simulation, context);
 	    Highcharts.setOptions({
 	        global: {
@@ -94,7 +94,7 @@
 	
 	var _predator2 = _interopRequireDefault(_predator);
 	
-	var _chart = __webpack_require__(7);
+	var _chart = __webpack_require__(6);
 	
 	var _chart2 = _interopRequireDefault(_chart);
 	
@@ -120,7 +120,8 @@
 	    this.mutationRate = .03;
 	    this.mutantIdx = 0;
 	    this.data = [];
-	    this.preyGeneration = 250;
+	    this.preyGeneration = 200;
+	    this.predGeneration = 350;
 	
 	    while (this.prey.length < this.initialPrey) {
 	      this.addPrey(2, 'blue', 'original');
@@ -177,9 +178,10 @@
 	    value: function step() {
 	      this.moveAnimals();
 	      this.handleCollisions();
-	      this.reproduce();
+	      this.reproducePrey();
+	      this.reproducePredators();
 	      this.die();
-	      if (this.steps % 250 === 0) {
+	      if (this.steps % this.preyGeneration === 0) {
 	        this.recordData(this.steps / 250);
 	      }
 	
@@ -238,14 +240,17 @@
 	      return total / this.prey.length;
 	    }
 	  }, {
-	    key: 'reproduce',
-	    value: function reproduce() {
+	    key: 'reproducePrey',
+	    value: function reproducePrey() {
 	      var _this = this;
 	
-	      this.prey.forEach(function (preyObj) {
+	      var simulation = this;
 	
-	        if (preyObj.steps % _this.preyGeneration === 0 && preyObj.steps > 0) {
+	      this.prey.forEach(function (preyObj) {
+	        if (simulation.reproduces(preyObj)) {
+	
 	          var mutationNum = Math.random();
+	          preyObj.resetReproduce();
 	
 	          if (mutationNum > .97) {
 	            _this.mutantIdx += 1;
@@ -261,10 +266,31 @@
 	          }
 	        }
 	      });
+	    }
+	  }, {
+	    key: 'reproduces',
+	    value: function reproduces(prey) {
+	      if (prey.sinceReproduce > this.preyGeneration) {
+	        var reproChance = Math.random();
+	        return reproChance < (prey.sinceReproduce - this.preyGeneration) / 100 ? true : false;
+	      } else {
+	        return false;
+	      }
+	    }
+	  }, {
+	    key: 'reproducePredators',
+	    value: function reproducePredators() {
+	      var _this2 = this;
+	
+	      var simulation = this;
 	
 	      this.predators.forEach(function (predObj) {
-	        if (predObj.steps % 300 === 0 && predObj.steps > 0) {
-	          _this.addPredator();
+	        var reproChance = Math.random();
+	        var reproLikelihood = (predObj.sinceReproduce - _this2.predGeneration) / 100;
+	
+	        if (reproLikelihood > reproChance) {
+	          predObj.resetReproduce();
+	          _this2.addPredator();
 	        }
 	      });
 	    }
@@ -274,13 +300,13 @@
 	      var simulation = this;
 	
 	      this.predators.forEach(function (predObj) {
-	        if (predObj.sinceFood > 175 || predObj.steps > 2000) {
+	        if (predObj.sinceFood > 175 || predObj.steps > 1000) {
 	          simulation.remove(predObj, 'predator');
 	        }
 	      });
 	
 	      this.prey.forEach(function (preyObj) {
-	        if (preyObj.steps > 650) {
+	        if (preyObj.steps > 600) {
 	          simulation.remove(preyObj, 'prey');
 	        }
 	      });
@@ -315,7 +341,7 @@
 	  }, {
 	    key: 'handleCollisions',
 	    value: function handleCollisions() {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      var toRemove = [];
 	
@@ -330,7 +356,7 @@
 	      });
 	
 	      toRemove.forEach(function (item) {
-	        _this2.remove(item, 'prey');
+	        _this3.remove(item, 'prey');
 	      });
 	    }
 	  }, {
@@ -456,6 +482,7 @@
 	    this.velocity = [0, 0];
 	    this.steps = 0;
 	    this.strain = options['strain'];
+	    this.sinceReproduce = 0;
 	  }
 	
 	  _createClass(Animal, [{
@@ -470,12 +497,20 @@
 	    key: 'move',
 	    value: function move() {
 	      this.steps++;
+	
 	      this.setVelocity();
 	      this.position[0] += this.velocity[0];
 	      this.position[1] += this.velocity[1];
 	      if (this.simulation.isOutOfBounds(this.position)) {
 	        this.position = this.simulation.wrap(this.position);
 	      }
+	
+	      this.sinceReproduce++;
+	    }
+	  }, {
+	    key: 'resetReproduce',
+	    value: function resetReproduce() {
+	      this.sinceReproduce = 0;
 	    }
 	  }, {
 	    key: 'draw',
@@ -639,45 +674,6 @@
 /* 6 */
 /***/ function(module, exports) {
 
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var SimulationView = function () {
-	  function SimulationView(simulation, ctx) {
-	    _classCallCheck(this, SimulationView);
-	
-	    this.simulation = simulation;
-	    this.ctx = ctx;
-	  }
-	
-	  _createClass(SimulationView, [{
-	    key: "start",
-	    value: function start() {
-	      var view = this;
-	
-	      this.simulationID = window.setInterval(function () {
-	        view.simulation.draw(view.ctx);
-	        view.simulation.step();
-	      }, 30);
-	    }
-	  }]);
-	
-	  return SimulationView;
-	}();
-	
-	exports.default = SimulationView;
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -768,6 +764,45 @@
 	}();
 	
 	exports.default = Charter;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var SimulationView = function () {
+	  function SimulationView(simulation, ctx) {
+	    _classCallCheck(this, SimulationView);
+	
+	    this.simulation = simulation;
+	    this.ctx = ctx;
+	  }
+	
+	  _createClass(SimulationView, [{
+	    key: "start",
+	    value: function start() {
+	      var view = this;
+	
+	      this.simulationID = window.setInterval(function () {
+	        view.simulation.draw(view.ctx);
+	        view.simulation.step();
+	      }, 30);
+	    }
+	  }]);
+	
+	  return SimulationView;
+	}();
+	
+	exports.default = SimulationView;
 
 /***/ }
 /******/ ]);
