@@ -736,7 +736,7 @@
 	          }
 	        },
 	        title: {
-	          text: 'Species populations',
+	          text: 'Species Populations',
 	          style: {
 	            fontSize: '14px'
 	          }
