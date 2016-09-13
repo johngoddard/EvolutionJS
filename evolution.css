@@ -1,5 +1,27 @@
-#pop-graph{
+.graph{
   display: inline-block;
-  height: 200px;
-  width: 400px;
+  height: 250px;
+  width: 450px;
+  background: white;
+  border: 3px solid #555;
+}
+
+#simulation-canvas{
+  border: 3px solid #555;
+  background: white;
+}
+
+.simulation-area{
+  width: 1000px;
+  display: flex;
+  margin: 0 auto;
+}
+
+.charts{
+  display: inline-block;
+  width: 500px;
+}
+
+body{
+  background: rgba(0,0,0,0.02);
 }

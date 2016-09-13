@@ -181,7 +181,7 @@
 	      this.reproducePrey();
 	      this.reproducePredators();
 	      this.die();
-	      if (this.steps % this.preyGeneration === 0) {
+	      if (this.steps % (this.preyGeneration + 50) === 0) {
 	        this.recordData(this.steps / 250);
 	      }
 	
@@ -195,8 +195,8 @@
 	
 	      this.data.push({
 	        generation: generation,
-	        predators: this.predators.length,
-	        prey: this.prey.length,
+	        predators: this.predators.length / this.initialPredators * 100,
+	        prey: this.prey.length / this.initialPrey * 100,
 	        dominantStrain: strainInfo[1],
 	        numStrains: strainInfo[0],
 	        strains: strainInfo[2],
@@ -300,7 +300,7 @@
 	      var simulation = this;
 	
 	      this.predators.forEach(function (predObj) {
-	        if (predObj.sinceFood > 175 || predObj.steps > 1000) {
+	        if (predObj.sinceFood > 200 || predObj.steps > 1500) {
 	          simulation.remove(predObj, 'predator');
 	        }
 	      });
@@ -677,7 +677,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -685,82 +685,170 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Charter = function () {
-	    function Charter(simulation) {
-	        _classCallCheck(this, Charter);
+	  function Charter(simulation) {
+	    _classCallCheck(this, Charter);
 	
-	        this.simulation = simulation;
-	        this.renderChart();
-	        this.maxGen = 0;
+	    this.simulation = simulation;
+	    this.maxPopGen = 0;
+	    this.maxFitGen = 0;
+	    this.renderFitnessChart();
+	    this.renderPopulationChart();
+	  }
+	
+	  _createClass(Charter, [{
+	    key: 'renderPopulationChart',
+	    value: function renderPopulationChart() {
+	      var simulation = this.simulation;
+	      var charter = this;
+	      $('#pop-graph').highcharts({
+	        chart: {
+	          type: 'spline',
+	          animation: Highcharts.svg,
+	          marginRight: 10,
+	          events: {
+	            load: function load() {
+	              var preySeries = this.series[0];
+	              var predSeries = this.series[1];
+	
+	              setInterval(function () {
+	                var latest = simulation.data.slice(-1)[0];
+	
+	                if (latest.generation > charter.maxPopGen) {
+	                  charter.maxGen = latest.generation;
+	                  preySeries.addPoint([latest.generation, latest.prey], true, false);
+	                  predSeries.addPoint([latest.generation, latest.predators], true, false);
+	                }
+	              }, 1000);
+	            }
+	          }
+	        },
+	        title: {
+	          text: 'Species populations',
+	          style: {
+	            fontSize: '14px'
+	          }
+	        },
+	        xAxis: {
+	          title: {
+	            text: 'Generations'
+	          },
+	          tickPixelInterval: 150
+	        },
+	        yAxis: {
+	          title: {
+	            text: 'Population (relative to initial)'
+	          },
+	          labels: {
+	            format: '{value} %'
+	          },
+	          plotLines: [{
+	            value: 0,
+	            width: 1,
+	            color: '#808080'
+	          }]
+	        },
+	        tooltip: {
+	          formatter: function formatter() {
+	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y);
+	          }
+	        },
+	        legend: {
+	          enabled: true
+	        },
+	        exporting: {
+	          enabled: false
+	        },
+	        series: [{
+	          name: 'Prey',
+	          data: function () {
+	            return [[0, 100]];
+	          }(),
+	          marker: {
+	            enabled: true
+	          }
+	        }, {
+	          name: 'Predators',
+	          data: function () {
+	            return [[0, 100]];
+	          }(),
+	          marker: {
+	            enabled: true
+	          }
+	        }]
+	      });
 	    }
+	  }, {
+	    key: 'renderFitnessChart',
+	    value: function renderFitnessChart() {
+	      var simulation = this.simulation;
+	      var charter = this;
+	      $('#fit-graph').highcharts({
+	        chart: {
+	          type: 'spline',
+	          animation: Highcharts.svg,
+	          marginRight: 10,
+	          events: {
+	            load: function load() {
+	              var fitSeries = this.series[0];
 	
-	    _createClass(Charter, [{
-	        key: 'renderChart',
-	        value: function renderChart() {
-	            var simulation = this.simulation;
-	            var charter = this;
-	            $('#pop-graph').highcharts({
-	                chart: {
-	                    type: 'spline',
-	                    animation: Highcharts.svg,
-	                    marginRight: 10,
-	                    events: {
-	                        load: function load() {
-	                            var series = this.series[0];
-	                            setInterval(function () {
-	                                var latest = simulation.data.slice(-1)[0];
+	              setInterval(function () {
+	                var latest = simulation.data.slice(-1)[0];
 	
-	                                if (latest.generation > charter.maxGen) {
-	                                    charter.maxGen = latest.generation;
-	                                    console.log(latest.generation);
-	                                    console.log(latest.prey);
-	                                    series.addPoint([latest.generation, latest.prey], true, false);
-	                                    console.log(series);
-	                                }
-	                            }, 1000);
-	                        }
-	                    }
-	                },
-	                title: {
-	                    text: 'Prey Population'
-	                },
-	                xAxis: {
-	                    title: {
-	                        text: 'Prey Population'
-	                    },
-	                    tickPixelInterval: 150
-	                },
-	                yAxis: {
-	                    title: {
-	                        text: 'Value'
-	                    },
-	                    plotLines: [{
-	                        value: 0,
-	                        width: 1,
-	                        color: '#808080'
-	                    }]
-	                },
-	                tooltip: {
-	                    formatter: function formatter() {
-	                        return '<b>' + this.series.name + '</b><br/>' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2);
-	                    }
-	                },
-	                legend: {
-	                    enabled: false
-	                },
-	                exporting: {
-	                    enabled: false
-	                },
-	                series: [{
-	                    name: 'Population Data',
-	                    data: function () {
-	                        return [[0, 30]];
-	                    }()
-	                }]
-	            });
-	        }
-	    }]);
+	                if (latest.generation > charter.maxFitGen) {
+	                  charter.maxFitGen = latest.generation;
+	                  fitSeries.addPoint([latest.generation, latest.averageSpeed], true, false);
+	                }
+	              }, 1000);
+	            }
+	          }
+	        },
+	        title: {
+	          text: 'Average Prey Fitness',
+	          style: {
+	            fontSize: '14px'
+	          }
+	        },
+	        xAxis: {
+	          title: {
+	            text: 'Generations'
+	          },
+	          tickPixelInterval: 150
+	        },
+	        yAxis: {
+	          title: {
+	            text: 'Average Speed'
+	          },
+	          labels: {
+	            format: '{value}'
+	          },
+	          plotLines: [{
+	            value: 0,
+	            width: 1,
+	            color: '#f00'
+	          }]
+	        },
+	        tooltip: {
+	          formatter: function formatter() {
+	            return '<b>' + 'Average Prey Fitness' + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Average speed: ' + this.y);
+	          }
+	        },
+	        legend: {
+	          enabled: false
+	        },
+	        exporting: {
+	          enabled: false
+	        },
+	        series: [{
+	          name: 'Average Speed',
+	          data: function () {
+	            return [[0, 2]];
+	          }()
+	        }]
+	      });
+	    }
+	  }]);
 	
-	    return Charter;
+	  return Charter;
 	}();
 	
 	exports.default = Charter;
