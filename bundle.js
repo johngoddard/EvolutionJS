@@ -193,7 +193,7 @@
 	      var strainInfo = this.getStrainInfo();
 	      var avgSpeed = this.getAverageSpeed();
 	
-	      this.data.push({
+	      this.data = {
 	        generation: generation,
 	        predators: this.predators.length / this.initialPredators * 100,
 	        prey: this.prey.length / this.initialPrey * 100,
@@ -201,7 +201,7 @@
 	        numStrains: strainInfo[0],
 	        strains: strainInfo[2],
 	        averageSpeed: avgSpeed
-	      });
+	      };
 	    }
 	  }, {
 	    key: 'getStrainInfo',
@@ -711,7 +711,7 @@
 	              var predSeries = this.series[1];
 	
 	              setInterval(function () {
-	                var latest = simulation.data.slice(-1)[0];
+	                var latest = simulation.data;
 	
 	                if (latest.generation > charter.maxPopGen) {
 	                  charter.maxGen = latest.generation;
@@ -792,7 +792,7 @@
 	              var fitSeries = this.series[0];
 	
 	              setInterval(function () {
-	                var latest = simulation.data.slice(-1)[0];
+	                var latest = simulation.data;
 	
 	                if (latest.generation > charter.maxFitGen) {
 	                  charter.maxFitGen = latest.generation;
@@ -878,11 +878,16 @@
 	  _createClass(SimulationView, [{
 	    key: "start",
 	    value: function start() {
+	      var _this = this;
+	
 	      var view = this;
 	
 	      this.simulationID = window.setInterval(function () {
 	        view.simulation.draw(view.ctx);
 	        view.simulation.step();
+	        if (view.simulation.prey.length === 0 || view.simulation.predators.length === 0) {
+	          window.clearInterval(_this.simulationID);
+	        }
 	      }, 30);
 	    }
 	  }]);
