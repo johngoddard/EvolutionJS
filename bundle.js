@@ -144,6 +144,7 @@
 	      this.prey = [];
 	      this.steps = 0;
 	      this.mutantIdx = 0;
+	      this.generation = 0;
 	      this.data = null;
 	
 	      while (this.prey.length < this.initialPrey) {
@@ -205,7 +206,8 @@
 	      this.reproducePredators();
 	      this.die();
 	      if (this.steps % (this.preyGeneration + 50) === 0) {
-	        this.recordData(this.steps / (this.preyGeneration + 50));
+	        this.generation++;
+	        this.recordData(this.generation);
 	      }
 	
 	      this.steps++;
@@ -1015,6 +1017,8 @@
 	    value: function reset() {
 	      clearInterval(this.graphID);
 	      clearInterval(this.simulationID);
+	      this.maxGen = 0;
+	
 	      this.simulation.charter.stop();
 	
 	      this.simulation.reset();
@@ -1062,7 +1066,7 @@
 	        }
 	      }, 1000);
 	
-	      this.setSimulationSpeed(1);
+	      this.setSimulationSpeed($('#sim-speed-slider').val());
 	    }
 	  }, {
 	    key: 'updateStrainTable',
