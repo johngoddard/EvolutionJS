@@ -935,6 +935,7 @@
 	
 	    this.initializeButtons();
 	    this.initializeSliders();
+	    this.initializeModal();
 	  }
 	
 	  _createClass(SimulationView, [{
@@ -943,11 +944,20 @@
 	      var _this = this;
 	
 	      $('#play-btn').click(function () {
+	        var $start = $('#start-overlay');
+	        if ($start) {
+	          $start.remove();
+	        }
 	        _this.togglePlay();
 	      });
 	
 	      $('#reset-btn').click(function () {
 	        _this.reset();
+	      });
+	
+	      $('#overlay-start').click(function () {
+	        $('#start-overlay').remove();
+	        _this.togglePlay();
 	      });
 	    }
 	  }, {
@@ -992,6 +1002,24 @@
 	      });
 	    }
 	  }, {
+	    key: 'initializeModal',
+	    value: function initializeModal() {
+	      var modal = $('.about-modal-overlay');
+	
+	      $('.modal-link').click(function (e) {
+	        modal.show();
+	        e.stopPropagation();
+	      });
+	
+	      $('.about-modal').click(function (e) {
+	        e.stopPropagation();
+	      });
+	
+	      $(window).click(function () {
+	        modal.hide();
+	      });
+	    }
+	  }, {
 	    key: 'setSimulationSpeed',
 	    value: function setSimulationSpeed(speed) {
 	      var view = this;
@@ -1027,7 +1055,7 @@
 	      var _this3 = this;
 	
 	      $('#play-btn').prop('disabled', true);
-	      var $div = $('<div>', { class: 'extiction-overlay' });
+	      var $div = $('<div>', { class: 'extinction-overlay after-sim' });
 	      var $p = $('<p>');
 	
 	      var generations = this.maxGen === 1 ? 'generation' : 'generations';
@@ -1088,7 +1116,7 @@
 	      } else {
 	        this.pause();
 	        this.status = 'paused';
-	        $('#play-btn').text('Start');
+	        $('#play-btn').text('Play');
 	      }
 	
 	      this.simulation.charter.togglePlaying();

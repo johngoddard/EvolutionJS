@@ -3,16 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>Evolution JS</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|Roboto:300,400,700" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="./evolution.css" media="screen" title="no title">
+    <link rel="stylesheet" href="./style/reset.css" media="screen" title="no title">
+    <link rel="stylesheet" href="./style/evolution.css" media="screen" title="no title">
       <script src="./node_modules/rangeslider.js/dist/rangeslider.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -20,99 +18,130 @@
 
   </head>
   <body>
-    <div class='main-container'>
-      <sidebar class='controls-container'>
-        <span>Simulation Settings</span>
-        <div class='sliders'>
-          <div class='slider-cont'>
-            <label id='mut-label'> Mutation Rate: 4%</label>
-            <input
-              id='mut-slider'
-              class='slider-control'
-              type="range"
-              min="0"
-              max=".1"
-              step=".01"
-              value=".04"
-              data-orientation="horizontal"
-            />
-          </div>
+      <header class="header-bar">
+        <div class='logo'>EvolutionJS</div>
+        <ul class='link-bar'>
+          <li class='modal-link'>How It Works</li>
+        </ul>
+      </header>
+      <div class='main-container'>
+        <sidebar class='controls-container'>
+          <span>Simulation Settings</span>
+          <div class='sliders'>
+            <div class='slider-cont'>
+              <label id='mut-label'> Mutation Rate: 4%</label>
+              <input
+                id='mut-slider'
+                class='slider-control'
+                type="range"
+                min="0"
+                max=".1"
+                step=".01"
+                value=".04"
+                data-orientation="horizontal"
+              />
+            </div>
 
-          <div class='slider-cont'>
-            <label id='gen-label'> Prey generation time: 4</label>
-            <input
-              id='gen-slider'
-              class='slider-control'
-              type="range"
-              min="1"
-              max="10"
-              step="1"
-              value="4"
-              data-orientation="horizontal"
-            />
-          </div>
+            <div class='slider-cont'>
+              <label id='gen-label'> Prey generation time: 4</label>
+              <input
+                id='gen-slider'
+                class='slider-control'
+                type="range"
+                min="1"
+                max="10"
+                step="1"
+                value="4"
+                data-orientation="horizontal"
+              />
+            </div>
 
-          <div class='slider-cont'>
-            <label id='speed-label'>Predator speed: 2.7</label>
-            <input
-              id='speed-slider'
-              class='slider-control'
-              type="range"
-              min="1"
-              max="5"
-              step=".1"
-              value="2.7"
-              data-orientation="horizontal"
-            />
-          </div>
+            <div class='slider-cont'>
+              <label id='speed-label'>Predator speed: 2.7</label>
+              <input
+                id='speed-slider'
+                class='slider-control'
+                type="range"
+                min="1"
+                max="5"
+                step=".1"
+                value="2.7"
+                data-orientation="horizontal"
+              />
+            </div>
 
-          <div class='slider-cont'>
-            <label id='sim-speed-label'>Simulation speed: 1x</label>
-            <input
-              id='sim-speed-slider'
-              class='slider-control'
-              type="range"
-              min=".1"
-              max="2"
-              step=".1"
-              value="1"
-              data-orientation="horizontal"
-            />
+            <div class='slider-cont'>
+              <label id='sim-speed-label'>Simulation speed: 1x</label>
+              <input
+                id='sim-speed-slider'
+                class='slider-control'
+                type="range"
+                min=".1"
+                max="2"
+                step=".1"
+                value="1"
+                data-orientation="horizontal"
+              />
+            </div>
           </div>
-        </div>
-        <div class='btn-bar'>
-          <button type="button" id="play-btn" class="btn btn-primary">Start</button>
-          <button type="button" id="reset-btn" class="btn btn-warning">Reset</button>
-        </div>
-      </sidebar>
-      <main class='simulation-area'>
-        <section class='simulation'>
-          <section class='table-cont'>
-            <table id='top-strains' class='table'>
-              <tr>
-                <th>Top Strains</td>
-                <th>Population</td>
-                <th>Average Speed</td>
-              </tr>
-              <tbody id='top-strains-body'>
-                <td>
-                  <div class="strain-key" style="background:blue"></div>
-                  original
-                </td>
-                <td>30</td>
-                <td>2</td>
-              </tbody>
-            </table>
+          <div class='btn-bar'>
+            <button type="button" id="play-btn" class="btn btn-primary">Play</button>
+            <button type="button" id="reset-btn" class="btn btn-warning">Reset</button>
+          </div>
+        </sidebar>
+        <main class='simulation-area'>
+          <section class='simulation'>
+            <section class='table-cont'>
+              <table id='top-strains' class='table'>
+                <tr>
+                  <th>Top Strains</td>
+                  <th>Population</td>
+                  <th>Average Speed</td>
+                </tr>
+                <tbody id='top-strains-body'>
+                  <td>
+                    <div class="strain-key" style="background:blue"></div>
+                    original
+                  </td>
+                  <td>30</td>
+                  <td>2</td>
+                </tbody>
+              </table>
+            </section>
+            <div id='sim-container'>
+              <canvas id="simulation-canvas" width="500" height="500"></canvas>
+              <div class='extinction-overlay' id='start-overlay'>
+                <p>Welcome to EvolutionJS!</p>
+                <div class='overlay-btn-cont'>
+                  <button type='button' class='btn btn-success' id='overlay-start'>Start Simulation</button>
+                </div>
+              </div>
+            </div>
           </section>
-          <div id='sim-container'>
-            <canvas id="simulation-canvas" width="500" height="500"></canvas>
+          <section class='charts'>
+            <figure id='fit-graph' class='graph' width="300" height="200"></figure>
+            <figure id='pop-graph' class='graph' width="300" height="200"></figure>
+          </section>
+        </main>
+      </div>
+
+      <section class='about-modal-overlay'>
+        <div class='about-modal'>
+          <div class='mdl-header'>Welcome to EvolutionJS!</div>
+          <div class='mdl-content'>
+            <p>EvolutionJS is a visual simulation of a classic predator-prey natural selection model. Here's how the simulation works:</p>
+            <ul>
+              <li>Predators <div class="sample-pred"></div> chase prey <div class="sample-prey"></div>.</li>
+              <li>If a predator catches a prey, the predator eats the prey, and the prey disappears. This creates a selective pressure on prey speed.</li>
+              <li>If a predator doesn't eat in a certain amount of time, it will die and disappear.</li>
+              <li>After a certain amount of time, prey and predators will reproduce, and new prey and predators will appear. The longer an animal survives, the more chances it has to reproduce.</li>
+              <li>Usually, a prey offspring will have a similar speed to its parent.</li>
+              <li>Occasionally, a prey offspring will have a mutation, and it's speed will be significantly differnt from its parent's. Mutant offspring <div class="sample-prey" id='mut'></div> will be a different color from their parent <div class="sample-prey"></div>.</li>
+              <li>Prey and predator have set lifespans, and will die after a certain amount of time without being eaten or starving.</li>
+            </ul>
+            <p>Watch how the prey's average fitness (speed) change in the graph on the right. You can also use the sliders to change simulation parameters. How do you think each option will affect the prey evolution?</p>
           </div>
-        </section>
-        <section class='charts'>
-          <figure id='fit-graph' class='graph' width="300" height="200"></figure>
-          <figure id='pop-graph' class='graph' width="300" height="200"></figure>
-        </section>
-      </main>
-    </section>
+        </div>
+      </section>
   </body>
 </html>
