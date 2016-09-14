@@ -1056,7 +1056,7 @@
 	
 	      $('#play-btn').prop('disabled', true);
 	      var $div = $('<div>', { class: 'extinction-overlay after-sim' });
-	      var $p = $('<p>');
+	      var $p = $('<p>', { class: 'ex-text' });
 	
 	      var generations = this.maxGen === 1 ? 'generation' : 'generations';
 	      var fitnessChange = (100 * ((this.simulation.data.averageSpeed - 2) / 2)).toFixed(1);
@@ -1101,9 +1101,10 @@
 	  }, {
 	    key: 'clearOverlay',
 	    value: function clearOverlay() {
-	      var overlay = $('.extiction-overlay');
-	      if (overlay.length > 0) {
-	        overlay[0].remove();
+	      var $overlay = $('.extinction-overlay');
+	      console.log('hi');
+	      if ($overlay.length > 0) {
+	        $overlay[0].remove();
 	      }
 	    }
 	  }, {

@@ -20,7 +20,7 @@ The following are the core pieces of functionality:
 - [x] Start and pause the simulation
 - [x] A controls area where users can change simulation settings
 - [x] Live updating charts
-- [ ] A brief introduction or explanatory modal
+- [x] A brief introduction or explanatory modal
 - [ ] Production Readme
 
 ### Wireframes

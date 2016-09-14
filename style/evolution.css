@@ -6,8 +6,8 @@
 
 .graph{
   display: inline-block;
-  height: 250px;
-  width: 430px;
+  height: 280px;
+  width: 440px;
   background: white;
   border: 2px solid #555;
   margin-bottom: 20px;
@@ -106,6 +106,10 @@
   padding-top: 20px;
 }
 
+.slider-cont:first-child{
+  padding-top: 10px;
+}
+
 .slider-cont:last-child{
   margin-bottom: 20px;
 }
@@ -121,9 +125,8 @@
 
 .controls-container > span{
   display: block;
-  padding: 10px 0;
-  text-align: center;
-  font-size: 18px;
+  padding: 8px 0;
+  font-size: 16px;
 }
 
 #sim-container{
@@ -264,4 +267,8 @@ body{
 
 body{
   position: relative;
+}
+
+.ex-text{
+  padding: 10px 40px;
 }
