@@ -22,6 +22,15 @@
     <section class='main-container'>
       <div class='controls-container'>
         <span>Simulation Settings</span>
+        <div class='sliders'>
+          <div class='slider-control' id="mut-slide"></div>
+          <div class='slider-control' id="speed-slide"></div>
+          <div class='slider-control' id="gen-time-slide"></div>
+        </div>
+        <div class='btn-bar'>
+          <button type="button" id="play-btn" class="btn btn-primary">Start</button>
+          <button type="button" id="reset-btn" class="btn btn-warning">Reset</button>
+        </div>
       </div>
       <main class='simulation-area'>
         <section class='simulation'>
@@ -31,7 +40,7 @@
           <figure id='pop-graph' class='graph' width="300" height="200"></figure>
           <figure id='fit-graph' class='graph' width="300" height="200"></figure>
           <section class='table-cont'>
-            <span id='table-tile'>Top strains: Generation 0</span>
+            <span id='table-title'>Top strains: Generation 0</span>
             <table id='top-strains' class='table'>
               <tr>
                 <th>Strain</td>

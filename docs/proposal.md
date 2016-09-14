@@ -17,9 +17,9 @@ The primary component in the project will be a canvas area where "predators" are
 
 The following are the core pieces of functionality:
 
-- [ ] Start and pause the simulation
+- [x] Start and pause the simulation
 - [ ] A controls area where users can change simulation settings
-- [ ] Live updating charts
+- [x] Live updating charts
 - [ ] A brief introduction or explanatory modal
 - [ ] Production Readme
 

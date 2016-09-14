@@ -65,13 +65,12 @@
 	    var context = canvas.getContext('2d');
 	    var simulation = new _simulation2.default(500, 500, 5, 30);
 	    var simulationView = new _simulation_view2.default(simulation, context);
+	
 	    Highcharts.setOptions({
 	        global: {
 	            useUTC: false
 	        }
 	    });
-	
-	    simulationView.start();
 	});
 
 /***/ },
@@ -110,31 +109,36 @@
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
 	    _classCallCheck(this, Simulation);
 	
-	    this.DIM_X = dimX;
-	    this.DIM_Y = dimY;
 	    this.initialPredators = initialPred;
 	    this.initialPrey = initialPrey;
-	    this.predators = [];
-	    this.prey = [];
-	    this.steps = 0;
-	    this.mutationRate = .03;
-	    this.mutantIdx = 0;
-	    this.data = null;
-	    this.preyGeneration = 200;
-	    this.predGeneration = 350;
-	
-	    while (this.prey.length < this.initialPrey) {
-	      this.addPrey(2, 'blue', 'original');
-	    }
-	
-	    while (this.predators.length < this.initialPredators) {
-	      this.addPredator();
-	    }
-	
-	    this.charter = new _chart2.default(this);
+	    this.DIM_X = dimX;
+	    this.DIM_Y = dimY;
+	    this.reset();
 	  }
 	
 	  _createClass(Simulation, [{
+	    key: 'reset',
+	    value: function reset() {
+	      this.predators = [];
+	      this.prey = [];
+	      this.steps = 0;
+	      this.mutationRate = .03;
+	      this.mutantIdx = 0;
+	      this.data = null;
+	      this.preyGeneration = 200;
+	      this.predGeneration = 350;
+	
+	      while (this.prey.length < this.initialPrey) {
+	        this.addPrey(2, 'blue', 'original');
+	      }
+	
+	      while (this.predators.length < this.initialPredators) {
+	        this.addPredator();
+	      }
+	
+	      this.charter = new _chart2.default(this);
+	    }
+	  }, {
 	    key: 'addPrey',
 	    value: function addPrey(speed, color, strain) {
 	      if (this.prey.length < 100) {
@@ -706,13 +710,28 @@
 	    this.maxFitGen = 0;
 	    this.renderFitnessChart();
 	    this.renderPopulationChart();
+	    this.playing = false;
+	    this.popInterval;
+	    this.fitInterval;
 	  }
 	
 	  _createClass(Charter, [{
+	    key: 'togglePlaying',
+	    value: function togglePlaying() {
+	      this.playing = this.playing ? false : true;
+	    }
+	  }, {
+	    key: 'stop',
+	    value: function stop() {
+	      clearInterval(this.popInterval);
+	      clearInterval(this.fitInterval);
+	    }
+	  }, {
 	    key: 'renderPopulationChart',
 	    value: function renderPopulationChart() {
 	      var simulation = this.simulation;
 	      var charter = this;
+	
 	      $('#pop-graph').highcharts({
 	        chart: {
 	          type: 'spline',
@@ -723,11 +742,12 @@
 	              var preySeries = this.series[0];
 	              var predSeries = this.series[1];
 	
-	              setInterval(function () {
+	              charter.popInterval = setInterval(function () {
 	                var latest = simulation.data;
 	
-	                if (latest.generation > charter.maxPopGen) {
+	                if (latest && charter.playing && latest.generation > charter.maxPopGen) {
 	                  charter.maxGen = latest.generation;
+	
 	                  preySeries.addPoint([latest.generation, latest.prey], true, false);
 	                  predSeries.addPoint([latest.generation, latest.predators], true, false);
 	                }
@@ -762,7 +782,7 @@
 	        },
 	        tooltip: {
 	          formatter: function formatter() {
-	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y.toFixed(2));
+	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y.toFixed(2) + ' %');
 	          }
 	        },
 	        legend: {
@@ -807,10 +827,10 @@
 	            load: function load() {
 	              var fitSeries = this.series[0];
 	
-	              setInterval(function () {
+	              charter.fitInterval = setInterval(function () {
 	                var latest = simulation.data;
 	
-	                if (latest.generation > charter.maxFitGen) {
+	                if (latest && charter.playing && latest.generation > charter.maxFitGen) {
 	                  charter.maxFitGen = latest.generation;
 	                  fitSeries.addPoint([latest.generation, latest.averageSpeed], true, false);
 	                }
@@ -888,21 +908,72 @@
 	
 	var SimulationView = function () {
 	  function SimulationView(simulation, ctx) {
+	    var _this = this;
+	
 	    _classCallCheck(this, SimulationView);
 	
 	    this.simulation = simulation;
 	    this.ctx = ctx;
 	    this.maxGen = 0;
+	    this.status = 'paused';
+	    this.graphID;
+	    this.simulationID;
+	
+	    $('#play-btn').click(function () {
+	      _this.togglePlay();
+	    });
+	
+	    $('#reset-btn').click(function () {
+	      _this.reset();
+	    });
 	  }
 	
 	  _createClass(SimulationView, [{
+	    key: 'reset',
+	    value: function reset() {
+	      clearInterval(this.graphID);
+	      clearInterval(this.simulationID);
+	      this.simulation.charter.stop();
+	
+	      this.simulation.reset();
+	      this.resetStrainTable();
+	
+	      if (this.status === 'paused') {
+	        this.togglePlay();
+	      } else {
+	        this.start();
+	        this.simulation.charter.togglePlaying();
+	      }
+	    }
+	  }, {
+	    key: 'togglePlay',
+	    value: function togglePlay() {
+	      if (this.status === 'paused') {
+	        this.start();
+	        this.status = 'playing';
+	        $('#play-btn').text('Pause');
+	      } else {
+	        this.pause();
+	        this.status = 'paused';
+	        $('#play-btn').text('Start');
+	      }
+	
+	      this.simulation.charter.togglePlaying();
+	    }
+	  }, {
+	    key: 'pause',
+	    value: function pause() {
+	      clearInterval(this.graphID);
+	      clearInterval(this.simulationID);
+	    }
+	  }, {
 	    key: 'start',
 	    value: function start() {
-	      var _this = this;
+	      var _this2 = this;
 	
 	      var view = this;
 	
-	      setInterval(function () {
+	      this.graphID = setInterval(function () {
 	        var latest = view.simulation.data;
 	
 	        if (latest.generation > view.maxGen) {
@@ -915,7 +986,7 @@
 	        view.simulation.draw(view.ctx);
 	        view.simulation.step();
 	        if (view.simulation.prey.length === 0 || view.simulation.predators.length === 0) {
-	          window.clearInterval(_this.simulationID);
+	          window.clearInterval(_this2.simulationID);
 	        }
 	      }, 30);
 	    }
@@ -930,7 +1001,7 @@
 	        $('#top-strains-body').append('<tr>\n          <td>\n            <div class="strain-key" style="background:' + strain.color + '"></div>\n            ' + strain.name + '\n          </td>\n          <td>' + strain.population + '</td>\n          <td>' + (strain.totalSpeed / strain.population).toFixed(3) + '</td>\n        </tr>');
 	      });
 	
-	      $('#table-tile').text('Top Strains: Generation ' + this.maxGen);
+	      $('#table-title').text('Top Strains: Generation ' + this.maxGen);
 	    }
 	  }, {
 	    key: 'getTopStrains',
@@ -944,6 +1015,14 @@
 	      return strainArray.sort(function (s1, s2) {
 	        return s2.population - s1.population;
 	      }).slice(0, 5);
+	    }
+	  }, {
+	    key: 'resetStrainTable',
+	    value: function resetStrainTable() {
+	      $('#top-strains-body').empty();
+	      $('#top-strains-body').append('<tr>\n        <td>\n          <div class="strain-key" style="background:blue"></div>\n          original\n        </td>\n        <td>30</td>\n        <td>2</td>\n      </tr>');
+	
+	      $('#table-title').text('Top strains: Generation 0');
 	    }
 	  }]);
 	
