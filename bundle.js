@@ -1018,6 +1018,11 @@
 	      $(window).click(function () {
 	        modal.hide();
 	      });
+	
+	      $('#close-modal-btn').click(function (e) {
+	        modal.hide();
+	        e.stopPropagation();
+	      });
 	    }
 	  }, {
 	    key: 'setSimulationSpeed',

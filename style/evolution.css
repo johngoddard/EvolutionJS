@@ -190,7 +190,7 @@ header li:hover{
 }
 
 .header-bar{
-  background: #555;
+  background: #333;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -224,12 +224,26 @@ body{
   padding: 10px 20px;
   margin: 0 auto;
   margin-top: 70px;
+  position: relative;
+}
+
+#close-modal-btn{
+  position: absolute;
+  right: 20px;
+  top: 25px;
+  font-size: 1.2em;
+  color: #999;
+}
+
+#close-modal-btn:hover{
+  color: #666;
+  cursor: pointer;
 }
 
 .mdl-header{
   font-family: 'Open Sans', sans-serif;
   font-size: 20px;
-  font-weight: 300;
+  font-weight: 400;
   padding: 10px 0;
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
@@ -286,4 +300,5 @@ body{
   display: inline-block;
   height: 100%;
   line-height: 100%;
+  color: #99ff99;
 }
