@@ -76,7 +76,7 @@ In addition to the webpack entry file, there will be four scripts involved in th
 
 - [x] Create controls for simulation speed, mutation rate, and generation time
 - [ ] Syle objects
-- [ ] Add an information modal.
+- [x] Add an information modal.
 
 
 ### Bonus features

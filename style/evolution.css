@@ -21,8 +21,8 @@
 }
 
 .controls-container{
-  width: 200px;
-  padding: 20px 10px 0 10px;
+  width: 220px;
+  padding: 20px;
   background: #ddd;
   position: absolute;
   top: 0;
@@ -36,7 +36,7 @@
   margin: 0 auto;
   justify-content: space-between;
   height: 100%;
-  margin-left: 210px;
+  margin-left: 225px;
   padding-left: 20px;
   padding-top: 20px;
 }
@@ -164,11 +164,14 @@
 }
 
 
-.logo{
-  font-family: 'Open Sans', sans-serif;
-  font-size: 20px;
-  font-weight: 300;
-  display: inline-block;
+.logo {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    justify-content: space-between;
+    width: 150px;
+    display: flex;
+    align-items: center;
 }
 
 header ul{
@@ -192,7 +195,7 @@ header li:hover{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 20px;
   height: 60px;
   width: 100%;
 }
@@ -271,4 +274,16 @@ body{
 
 .ex-text{
   padding: 10px 40px;
+}
+
+.logo-img{
+  height: 35px;
+  width: 35px;
+  display: inline-block;
+}
+
+.logo-txt{
+  display: inline-block;
+  height: 100%;
+  line-height: 100%;
 }
