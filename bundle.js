@@ -1108,7 +1108,6 @@
 	    key: 'clearOverlay',
 	    value: function clearOverlay() {
 	      var $overlay = $('.extinction-overlay');
-	      console.log('hi');
 	      if ($overlay.length > 0) {
 	        $overlay[0].remove();
 	      }
