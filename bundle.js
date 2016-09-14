@@ -515,6 +515,7 @@
 	    this.steps = 0;
 	    this.strain = options['strain'];
 	    this.sinceReproduce = 0;
+	    this.FULL = 2 * Math.PI;
 	  }
 	
 	  _createClass(Animal, [{
@@ -550,7 +551,7 @@
 	      ctx.fillStyle = this.color;
 	      ctx.beginPath();
 	
-	      ctx.arc(this.position[0], this.position[1], this.radius, 0, 2 * Math.PI, false);
+	      ctx.arc(this.position[0], this.position[1], this.radius, 0, this.FULL, false);
 	
 	      ctx.fill();
 	    }
