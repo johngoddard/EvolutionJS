@@ -20,8 +20,9 @@
 
   </head>
   <body>
-    <section class='main-container'>
-      <div class='controls-container'>
+    <div class='main-container'>
+      <sidebar class='controls-container'>
+        <span>Simulation Settings</span>
         <div class='sliders'>
           <div class='slider-cont'>
             <label id='mut-label'> Mutation Rate: 4%</label>
@@ -79,24 +80,17 @@
             />
           </div>
         </div>
-      </div>
         <div class='btn-bar'>
           <button type="button" id="play-btn" class="btn btn-primary">Start</button>
           <button type="button" id="reset-btn" class="btn btn-warning">Reset</button>
         </div>
-      </div>
+      </sidebar>
       <main class='simulation-area'>
         <section class='simulation'>
-          <canvas id="simulation-canvas" width="500" height="500"></canvas>
-        </section>
-        <section class='charts'>
-          <figure id='pop-graph' class='graph' width="300" height="200"></figure>
-          <figure id='fit-graph' class='graph' width="300" height="200"></figure>
           <section class='table-cont'>
-            <span id='table-title'>Top strains: Generation 0</span>
             <table id='top-strains' class='table'>
               <tr>
-                <th>Strain</td>
+                <th>Top Strains</td>
                 <th>Population</td>
                 <th>Average Speed</td>
               </tr>
@@ -110,6 +104,11 @@
               </tbody>
             </table>
           </section>
+          <canvas id="simulation-canvas" width="500" height="500"></canvas>
+        </section>
+        <section class='charts'>
+          <figure id='fit-graph' class='graph' width="300" height="200"></figure>
+          <figure id='pop-graph' class='graph' width="300" height="200"></figure>
         </section>
       </main>
     </section>

@@ -1,5 +1,6 @@
 .main-container{
   background: rgba(0,0,0,0.04);
+  overflow: scroll;
 }
 
 .graph{
@@ -14,38 +15,41 @@
 #simulation-canvas{
   border: 3px solid #555;
   background: white;
-  height: 500px;
-  width: 500px;
+  height: 415px;
+  width: 430px;
 }
 
 .controls-container{
-  width: 100%;
-  height: 80px;
+  width: 200px;
+  height: 100%;
   margin-bottom: 20px;
-  border-bottom: 3px solid #555;
-  padding: 0 100px;
+  padding: 20px 10px;
   background: #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 250px;
 }
 
 .simulation-area{
-  width: 1000px;
   display: flex;
   margin: 0 auto;
   justify-content: space-between;
   height: 100%;
+  margin-left: 230px;
+  padding-left: 20px;
+  padding-top: 20px;
 }
 
 
 
 .charts{
   display: inline-block;
-  width: 500px;
   margin-left: 40px;
-  overflow: scroll;
   height: 100vh;
+  overflow-y: scroll;
+  over
 }
 
 
@@ -62,11 +66,12 @@
 }
 
 .table-cont{
-  height: 300px;
+  height: 160px;
   width: 430px;
   border: 3px solid #555;
   padding: 0 10px;
   background: white;
+  margin-bottom: 20px;
 }
 
 .table-cont span{
@@ -95,9 +100,29 @@
 }
 
 .sliders{
-  display: flex;
 }
 
 .slider-cont{
   margin-right: 10px;
+  padding-top: 20px;
+}
+
+.slider-cont:last-child{
+  margin-bottom: 20px;
+}
+
+.btn-bar{
+  display: flex;
+  justify-content: center;
+}
+
+.btn:first-child{
+  margin-right: 10px;
+}
+
+.controls-container > span{
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 18px;
 }

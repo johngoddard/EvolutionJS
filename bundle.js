@@ -205,7 +205,7 @@
 	      this.reproducePredators();
 	      this.die();
 	      if (this.steps % (this.preyGeneration + 50) === 0) {
-	        this.recordData(this.steps / 250);
+	        this.recordData(this.steps / (this.preyGeneration + 50));
 	      }
 	
 	      this.steps++;
@@ -962,6 +962,15 @@
 	        _this2.simulation.setMutationRate(mutationRate);
 	      });
 	
+	      $('#gen-slider').on('input', function (e) {
+	        $('#gen-label').text('Prey generation time: ' + e.currentTarget.value);
+	      });
+	
+	      $('#gen-slider').on('change', function (e) {
+	        var generationTime = e.currentTarget.value;
+	        _this2.simulation.setPreyGeneration(generationTime * 50);
+	      });
+	
 	      $('#speed-slider').on('input', function (e) {
 	        $('#speed-label').text('Predator speed: ' + e.currentTarget.value);
 	      });
@@ -1079,7 +1088,7 @@
 	
 	      return strainArray.sort(function (s1, s2) {
 	        return s2.population - s1.population;
-	      }).slice(0, 5);
+	      }).slice(0, 3);
 	    }
 	  }, {
 	    key: 'resetStrainTable',
