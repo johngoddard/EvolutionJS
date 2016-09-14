@@ -114,19 +114,37 @@
 	    this.DIM_X = dimX;
 	    this.DIM_Y = dimY;
 	    this.reset();
+	    this.mutationRate = .04;
+	    this.preyGeneration = 200;
+	    this.predatorSpeed = 2.7;
+	    this.predGeneration = 350;
+	
+	    this.reset();
 	  }
 	
 	  _createClass(Simulation, [{
+	    key: 'setMutationRate',
+	    value: function setMutationRate(rate) {
+	      this.mutationRate = rate;
+	    }
+	  }, {
+	    key: 'setPreyGeneration',
+	    value: function setPreyGeneration(time) {
+	      this.preyGeneration = time;
+	    }
+	  }, {
+	    key: 'setPredatorSpeed',
+	    value: function setPredatorSpeed(speed) {
+	      this.predatorSpeed = speed;
+	    }
+	  }, {
 	    key: 'reset',
 	    value: function reset() {
 	      this.predators = [];
 	      this.prey = [];
 	      this.steps = 0;
-	      this.mutationRate = .03;
 	      this.mutantIdx = 0;
 	      this.data = null;
-	      this.preyGeneration = 200;
-	      this.predGeneration = 350;
 	
 	      while (this.prey.length < this.initialPrey) {
 	        this.addPrey(2, 'blue', 'original');
@@ -155,9 +173,10 @@
 	  }, {
 	    key: 'addPredator',
 	    value: function addPredator() {
+	
 	      this.predators.push(new _predator2.default({
 	        pos: this.randomPosition(),
-	        speed: 2.7,
+	        speed: this.predatorSpeed,
 	        radius: 10,
 	        color: 'red',
 	        simulation: this,
@@ -261,24 +280,18 @@
 	          var mutationNum = Math.random();
 	          preyObj.resetReproduce();
 	
-	          if (mutationNum > .97) {
+	          if (mutationNum > 1 - simulation.mutationRate / 2) {
 	            _this.mutantIdx += 1;
 	            var newSpeed = preyObj.speed + .25;
 	            var strainName = 'strain-' + _this.mutantIdx;
-	
 	            _this.addPrey(newSpeed, MUTANT_COLORS[_this.mutantIdx % MUTANT_COLORS.length], strainName);
-	          } else if (mutationNum < .03) {
+	          } else if (mutationNum < simulation.mutationRate / 2) {
 	            _this.mutantIdx += 1;
 	            var _newSpeed = preyObj.speed - .25;
 	            var _strainName = 'strain-' + _this.mutantIdx;
-	
 	            _this.addPrey(_newSpeed, MUTANT_COLORS[(_this.mutantIdx % MUTANT_COLORS.length, _strainName)]);
 	          } else {
 	            var _newSpeed2 = preyObj.speed + .1 * (.5 - Math.random());
-	
-	            if (!preyObj.strain) {
-	              console.log('undefined here');
-	            }
 	            _this.addPrey(_newSpeed2, preyObj.color, preyObj.strain);
 	          }
 	        }
@@ -652,7 +665,8 @@
 	      if (this.steps % 5 === 0 || this.steps < 10) {
 	        var closestPred = this.findClosestPrey();
 	        var dir = UTIL.findDirection(this.position, closestPred.position);
-	        this.velocity = [this.speed * dir[0], this.speed * dir[1]];
+	
+	        this.velocity = [this.simulation.predatorSpeed * dir[0], this.simulation.predatorSpeed * dir[1]];
 	      }
 	
 	      this.sinceFood++;
@@ -908,8 +922,6 @@
 	
 	var SimulationView = function () {
 	  function SimulationView(simulation, ctx) {
-	    var _this = this;
-	
 	    _classCallCheck(this, SimulationView);
 	
 	    this.simulation = simulation;
@@ -919,20 +931,77 @@
 	    this.graphID;
 	    this.simulationID;
 	
-	    $('#play-btn').click(function () {
-	      _this.togglePlay();
-	    });
-	
-	    $('#reset-btn').click(function () {
-	      _this.reset();
-	    });
-	
-	    $("#mut-slide").slider();
-	    $("#speed-slide").slider();
-	    $("#gen-time-slide").slider();
+	    this.initializeButtons();
+	    this.initializeSliders();
 	  }
 	
 	  _createClass(SimulationView, [{
+	    key: 'initializeButtons',
+	    value: function initializeButtons() {
+	      var _this = this;
+	
+	      $('#play-btn').click(function () {
+	        _this.togglePlay();
+	      });
+	
+	      $('#reset-btn').click(function () {
+	        _this.reset();
+	      });
+	    }
+	  }, {
+	    key: 'initializeSliders',
+	    value: function initializeSliders() {
+	      var _this2 = this;
+	
+	      $('#mut-slider').on('input', function (e) {
+	        $('#mut-label').text('Mutation Rate: ' + Math.floor(e.currentTarget.value * 100) + '%');
+	      });
+	
+	      $('#mut-slider').on('change', function (e) {
+	        var mutationRate = e.currentTarget.value;
+	        _this2.simulation.setMutationRate(mutationRate);
+	      });
+	
+	      $('#speed-slider').on('input', function (e) {
+	        $('#speed-label').text('Predator speed: ' + e.currentTarget.value);
+	      });
+	
+	      $('#speed-slider').on('change', function (e) {
+	        var speed = e.currentTarget.value;
+	        _this2.simulation.setPredatorSpeed(speed);
+	      });
+	
+	      $('#sim-speed-slider').on('input', function (e) {
+	        $('#sim-speed-label').text('Simulation speed: ' + e.currentTarget.value + 'x');
+	      });
+	
+	      $('#sim-speed-slider').on('change', function (e) {
+	        var simSpeed = e.currentTarget.value;
+	        _this2.setSimulationSpeed(simSpeed);
+	      });
+	    }
+	  }, {
+	    key: 'setSimulationSpeed',
+	    value: function setSimulationSpeed(speed) {
+	      var _this3 = this;
+	
+	      var view = this;
+	
+	      if (this.simulationID) {
+	        clearInterval(this.simulationID);
+	      }
+	
+	      var simInterval = 30 / speed;
+	
+	      this.simulationID = window.setInterval(function () {
+	        view.simulation.draw(view.ctx);
+	        view.simulation.step();
+	        if (view.simulation.prey.length === 0 || view.simulation.predators.length === 0) {
+	          window.clearInterval(_this3.simulationID);
+	        }
+	      }, simInterval);
+	    }
+	  }, {
 	    key: 'reset',
 	    value: function reset() {
 	      clearInterval(this.graphID);
@@ -973,8 +1042,6 @@
 	  }, {
 	    key: 'start',
 	    value: function start() {
-	      var _this2 = this;
-	
 	      var view = this;
 	
 	      this.graphID = setInterval(function () {
@@ -986,13 +1053,7 @@
 	        }
 	      }, 1000);
 	
-	      this.simulationID = window.setInterval(function () {
-	        view.simulation.draw(view.ctx);
-	        view.simulation.step();
-	        if (view.simulation.prey.length === 0 || view.simulation.predators.length === 0) {
-	          window.clearInterval(_this2.simulationID);
-	        }
-	      }, 30);
+	      this.setSimulationSpeed(1);
 	    }
 	  }, {
 	    key: 'updateStrainTable',
