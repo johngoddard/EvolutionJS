@@ -994,8 +994,6 @@
 	  }, {
 	    key: 'setSimulationSpeed',
 	    value: function setSimulationSpeed(speed) {
-	      var _this3 = this;
-	
 	      var view = this;
 	
 	      if (this.simulationID) {
@@ -1007,20 +1005,61 @@
 	      this.simulationID = window.setInterval(function () {
 	        view.simulation.draw(view.ctx);
 	        view.simulation.step();
-	        if (view.simulation.prey.length === 0 || view.simulation.predators.length === 0) {
-	          window.clearInterval(_this3.simulationID);
-	        }
+	        view.checkOver();
 	      }, simInterval);
+	    }
+	  }, {
+	    key: 'checkOver',
+	    value: function checkOver() {
+	      if (this.simulation.prey.length === 0) {
+	        window.clearInterval(this.simulationID);
+	        this.simulation.draw(this.ctx);
+	        this.handleExtinction('prey');
+	      } else if (this.simulation.predators.length === 0) {
+	        window.clearInterval(this.simulationID);
+	        this.simulation.draw(this.ctx);
+	        this.handleExtinction('predators');
+	      }
+	    }
+	  }, {
+	    key: 'handleExtinction',
+	    value: function handleExtinction(species) {
+	      var _this3 = this;
+	
+	      $('#play-btn').prop('disabled', true);
+	      var $div = $('<div>', { class: 'extiction-overlay' });
+	      var $p = $('<p>');
+	
+	      var generations = this.maxGen === 1 ? 'generation' : 'generations';
+	      var fitnessChange = (100 * ((this.simulation.data.averageSpeed - 2) / 2)).toFixed(1);
+	      var increased = fitnessChange >= 0 ? 'increased' : 'decreased';
+	
+	      $p.text('The ' + species + ' have gone extinct after ' + this.maxGen + ' ' + generations + '! The prey fitness ' + increased + ' by ' + fitnessChange + '%.');
+	
+	      var $btnContainer = $('<div>', { class: "overlay-btn-cont" });
+	      var $btn = $('<button>', { class: 'btn btn-success', id: 'overlay-reset', type: 'button' });
+	      $btn.text('Restart');
+	      $btn.click(function () {
+	        return _this3.reset();
+	      });
+	      $btnContainer.append($btn);
+	
+	      $div.append($p);
+	      $div.append($btnContainer);
+	
+	      $('#sim-container').append($div);
 	    }
 	  }, {
 	    key: 'reset',
 	    value: function reset() {
 	      clearInterval(this.graphID);
 	      clearInterval(this.simulationID);
+	
+	      $('#play-btn').prop('disabled', false);
+	      this.clearOverlay();
+	
 	      this.maxGen = 0;
-	
 	      this.simulation.charter.stop();
-	
 	      this.simulation.reset();
 	      this.resetStrainTable();
 	
@@ -1029,6 +1068,14 @@
 	      } else {
 	        this.start();
 	        this.simulation.charter.togglePlaying();
+	      }
+	    }
+	  }, {
+	    key: 'clearOverlay',
+	    value: function clearOverlay() {
+	      var overlay = $('.extiction-overlay');
+	      if (overlay.length > 0) {
+	        overlay[0].remove();
 	      }
 	    }
 	  }, {

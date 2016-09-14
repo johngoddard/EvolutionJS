@@ -126,3 +126,31 @@
   text-align: center;
   font-size: 18px;
 }
+
+#sim-container{
+  position: relative;
+  height: 415px;
+}
+
+.extiction-overlay{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  padding-top: 150px;
+  animation: fadein .5s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.extiction-overlay p{
+  font-size: 16px;
+  color: white;
+  padding: 5px 40px;
+}
