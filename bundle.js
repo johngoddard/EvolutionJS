@@ -926,6 +926,10 @@
 	    $('#reset-btn').click(function () {
 	      _this.reset();
 	    });
+	
+	    $("#mut-slide").slider();
+	    $("#speed-slide").slider();
+	    $("#gen-time-slide").slider();
 	  }
 	
 	  _createClass(SimulationView, [{
