@@ -18,7 +18,7 @@ The primary component in the project will be a canvas area where "predators" are
 The following are the core pieces of functionality:
 
 - [x] Start and pause the simulation
-- [ ] A controls area where users can change simulation settings
+- [x] A controls area where users can change simulation settings
 - [x] Live updating charts
 - [ ] A brief introduction or explanatory modal
 - [ ] Production Readme
@@ -67,14 +67,14 @@ In addition to the webpack entry file, there will be four scripts involved in th
 
 **Day 3**: Live updating graphs.
 
-- [ ] Learn highcharts API
-- [ ] Render graphs on the page with live updating population and average speed information.
-- [ ] Fine tune simulation initialization
+- [x] Learn highcharts API
+- [x] Render graphs on the page with live updating population and average speed information.
+- [x] Fine tune simulation initialization
 
 
 **Day 4**: Add simulation controls.  Style the frontend, and add an introdution:
 
-- [ ] Create controls for simulation speed, mutation rate, and generation time
+- [x] Create controls for simulation speed, mutation rate, and generation time
 - [ ] Syle objects
 - [ ] Add an information modal.
 
