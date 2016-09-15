@@ -31,7 +31,13 @@
     </header>
     <div class='main-container'>
       <sidebar class='controls-container'>
-        <span>Simulation Settings</span>
+        <span>Simulation Key</span>
+        <div class='key'>
+          <div class='key-item'><div class="sample-pred"></div>Predator </div>
+          <div class='key-item'><div class="sample-prey"></div>Prey</div>
+          <div class='key-item'><div id="sample-mut"></div>Mutant (multiple colors)</div>
+        </div>
+        <span id='sim-settings-head'>Simulation Settings</span>
         <div class='sliders'>
           <div class='slider-cont'>
 
@@ -125,15 +131,18 @@
           <button type="button" id="play-btn" class="btn btn-primary">Play</button>
           <button type="button" id="reset-btn" class="btn btn-warning">Reset</button>
         </div>
-        <div class='key'>
-          <div class='key-header'>Simulation Key</div>
-          <div class='key-item'><div class="sample-pred"></div>Predator </div>
-          <div class='key-item'><div class="sample-prey"></div>Prey</div>
-          <div class='key-item'><div id="sample-mut"></div>Mutant (multiple colors)</div>
-        </div>
       </sidebar>
       <main class='simulation-area'>
         <section class='simulation'>
+          <div id='sim-container'>
+            <canvas id="simulation-canvas" width="500" height="500"></canvas>
+            <div class='extinction-overlay' id='start-overlay'>
+              <p>Welcome to EvolutionJS!</p>
+              <div class='overlay-btn-cont'>
+                <button type='button' class='btn btn-success' id='overlay-start'>Start Simulation</button>
+              </div>
+            </div>
+          </div>
           <section class='table-cont'>
             <table id='top-strains' class='table'>
               <tr>
@@ -151,15 +160,6 @@
               </tbody>
             </table>
           </section>
-          <div id='sim-container'>
-            <canvas id="simulation-canvas" width="500" height="500"></canvas>
-            <div class='extinction-overlay' id='start-overlay'>
-              <p>Welcome to EvolutionJS!</p>
-              <div class='overlay-btn-cont'>
-                <button type='button' class='btn btn-success' id='overlay-start'>Start Simulation</button>
-              </div>
-            </div>
-          </div>
         </section>
         <section class='charts'>
           <figure id='fit-graph' class='graph' width="300" height="200"></figure>

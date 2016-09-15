@@ -119,7 +119,6 @@
   display: flex;
   justify-content: center;
   padding-bottom: 15px;
-  border-bottom: 1px solid #999;
 }
 
 .btn:first-child{
@@ -320,7 +319,7 @@ body{
   background: white;
   display: flex;
   flex-direction: column;
-  margin: 15px 0px 10px 0px;
+  margin: 0px 0px 20px 0px;
   padding: 10px 5px;
 }
 
