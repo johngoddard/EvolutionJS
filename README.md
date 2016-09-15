@@ -2,7 +2,7 @@
 
 [EvolutionJS live][prodlink]
 
-EvolutionJS is a browser-based visual natural selection simulation primarily intended to be an educational tool. The simulation models a classic predator-prey system where there is selective pressure on prey speed. As the simulation runs, live charts update with simulation data, frequently showing evolutionary trends like increasing prey fitness.
+EvolutionJS is a browser-based visual natural selection simulation, primarily intended to be an educational tool. The simulation models a classic predator-prey system where there is selective pressure on prey speed. As the simulation runs, live charts update with simulation data, frequently showing evolutionary trends like increasing prey fitness.
 
 ![EvolutionJS home page: https://johngoddard.github.io/EvolutionJS/][home page]
 
@@ -17,7 +17,7 @@ If a predator collides with a prey animal, the predator eats the prey, and the p
 Both predators and prey periodically reproduce, which adds another predator or prey animal to the simulation. Reproduction happens probabilistically, and the chance an animal reproduces in a given turn is defined by a function similar to the following:
 
 ```javascript
-reproductionProbability = (animal) => {
+reproductionProbability = animal => {
   return (animal.stepsSinceReproduce - MINIMUM_GENERATION_STEPS) / MINIMUM_GENERATION_STEPS;
 }
 ```
