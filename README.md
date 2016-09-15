@@ -58,7 +58,7 @@ There a few features I'd eventually like to add EvolutionJS to make it more robu
 
 - Improved performance: Currently if a simulation is run for several minutes, some of the graphics can start to slow down. I'd like to investigate other
 
-- Improved graphics: More predator/prey specific graphics could make it easier to understand what the simulation is and what's happening. 
+- Improved graphics: More predator/prey specific graphics could make it easier to understand what the simulation is and what's happening.
 
 [prodlink]: https://johngoddard.github.io/EvolutionJS/
-[home page]: ./docs/screenshots/evojs.png "EvolutionJS home page"
+[home page]: ./docs/screenshots/evolvejs.png "EvolutionJS home page"
