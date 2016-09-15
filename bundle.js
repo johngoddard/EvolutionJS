@@ -103,7 +103,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var MUTANT_COLORS = ['#FFEE93', '#99FF99', '#ffef82', '#274C77', '#5C5346', '#A64253', '#fbcc76'];
+	var MUTANT_COLORS = ['#FFEE93', '#99FF99', '#ffef82', '#3978c1', '#5C5346', '#A64253', '#fbcc76'];
 	
 	var Simulation = function () {
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
@@ -530,10 +530,11 @@
 	    key: 'move',
 	    value: function move() {
 	      this.steps++;
-	
 	      this.setVelocity();
+	
 	      this.position[0] += this.velocity[0];
 	      this.position[1] += this.velocity[1];
+	
 	      if (this.simulation.isOutOfBounds(this.position)) {
 	        this.position = this.simulation.wrap(this.position);
 	      }
@@ -803,7 +804,11 @@
 	          }
 	        },
 	        legend: {
-	          enabled: true
+	          enabled: true,
+	          floating: true,
+	          verticalAlign: 'top',
+	          x: 0,
+	          y: 7
 	        },
 	        exporting: {
 	          enabled: false
@@ -884,7 +889,7 @@
 	        },
 	        tooltip: {
 	          formatter: function formatter() {
-	            return '<b>' + 'Average Prey Fitness' + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Average speed: ' + this.y.toFixed(3));
+	            return '<b>' + 'Average Prey Fitness' + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Average speed: ' + this.y.toFixed(2));
 	          }
 	        },
 	        legend: {
@@ -1164,7 +1169,7 @@
 	      $('#top-strains-body').empty();
 	
 	      topStrains.forEach(function (strain) {
-	        $('#top-strains-body').append('<tr>\n          <td>\n            <div class="strain-key" style="background:' + strain.color + '"></div>\n            ' + strain.name + '\n          </td>\n          <td>' + strain.population + '</td>\n          <td>' + (strain.totalSpeed / strain.population).toFixed(3) + '</td>\n        </tr>');
+	        $('#top-strains-body').append('<tr>\n          <td>\n            <div class="strain-key" style="background:' + strain.color + '"></div>\n            ' + strain.name + '\n          </td>\n          <td>' + strain.population + '</td>\n          <td>' + (strain.totalSpeed / strain.population).toFixed(2) + '</td>\n        </tr>');
 	      });
 	
 	      $('#table-title').text('Top Strains: Generation ' + this.maxGen);

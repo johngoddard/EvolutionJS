@@ -9,15 +9,18 @@
   height: 280px;
   width: 440px;
   background: white;
-  border: 2px solid #555;
+  border: 1px solid #ccc;
   margin-bottom: 20px;
 }
 
 #simulation-canvas{
-  border: 2px solid #555;
-  background: white;
+  border: 1px solid #ccc;
+  background: #333;
   height: 400px;
   width: 400px;;
+}
+.t-head{
+  border-top: none !important;
 }
 
 .controls-container{
@@ -29,7 +32,9 @@
   left: 0;
   height: 100%;
   right: 250px;
+  box-shadow: 0 0 8px rgba(0,0,0,.3);
 }
+
 
 .simulation-area{
   display: flex;
@@ -67,7 +72,7 @@
 .table-cont{
   height: 160px;
   width: 400px;
-  border: 2px solid #555;
+  border: 1px solid #ccc;
   padding: 0 10px;
   background: white;
   margin-bottom: 10px;
@@ -147,7 +152,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.2);
   text-align: center;
   padding-top: 150px;
   height: 400px;
@@ -209,6 +214,7 @@ header li:hover{
 
 body{
   font-family: 'Roboto', sans-serif;
+  color: #333;
 }
 
 .about-modal-overlay{
@@ -225,8 +231,9 @@ body{
 .about-modal{
   width: 570px;
   border-radius: 10px;
-  border: 1px #ccc solid;
-  background: white;
+  opacity: .97;
+  color: #eee;
+  background: #333;
   z-index: 3;
   padding: 10px 20px;
   margin: 0 auto;
@@ -239,22 +246,22 @@ body{
   right: 20px;
   top: 25px;
   font-size: 1.2em;
-  color: #999;
+  color: #bbb;
 }
 
 #close-modal-btn:hover{
-  color: #666;
+  color: #999;
   cursor: pointer;
 }
 
 .mdl-header{
   font-family: 'Open Sans', sans-serif;
   font-size: 20px;
-  font-weight: 400;
-  padding: 10px 0;
+  font-weight: 300;
+  padding: 15px 0;
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
-  color: #71b871;
+  color: #99ff99;
 }
 
 .about-modal ul{
@@ -317,11 +324,13 @@ body{
 }
 
 .key{
-  background: white;
+  background: #333;
+  color: #eee;
   display: flex;
   flex-direction: column;
   margin: 0px 0px 20px 0px;
   padding: 10px 5px;
+  border-radius: 5px;
 }
 
 .key-item{
@@ -365,8 +374,8 @@ body{
   height: 16px;
   width: 16px;
   transform: rotate(45deg);
-  top: 11px;
-  left: -7px;
+  bottom: -7px;
+  left: 11px;
   background: #333;
   opacity: .95;
 }
@@ -378,17 +387,13 @@ body{
   color: #eee;
   border-radius: 5px;
   padding: 15px;
-  top: 10px;
-  left: 26px;
+  bottom: 47px;
+  left: -12px;
   width: 200px;
   font-size: 13px;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.25s linear;
-}
-
-#first-tip{
-  top: 0px;
 }
 
 .tool-wrap:hover .tool-tip{
@@ -399,8 +404,4 @@ body{
 
 .tool-wrap{
   display: inline-block;
-}
-
-tool-wrap > span{
-  color: #333;
 }
