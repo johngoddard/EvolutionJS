@@ -797,6 +797,9 @@
 	          labels: {
 	            format: '{value} %'
 	          },
+	          marker: {
+	            enabled: false
+	          },
 	          plotLines: [{
 	            value: 0,
 	            width: 1,
@@ -826,13 +829,19 @@
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
-	          color: '#50BDD8'
+	          color: '#50BDD8',
+	          marker: {
+	            enabled: false
+	          }
 	        }, {
 	          name: 'Predators',
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
-	          color: '#F25F5C'
+	          color: '#F25F5C',
+	          marker: {
+	            enabled: false
+	          }
 	        }]
 	      });
 	    }
@@ -906,6 +915,9 @@
 	        series: [{
 	          name: 'Average Speed',
 	          color: '#71b871',
+	          marker: {
+	            enabled: false
+	          },
 	          data: function () {
 	            return [[0, 2]];
 	          }()
