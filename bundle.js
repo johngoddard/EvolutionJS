@@ -103,7 +103,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var MUTANT_COLORS = ['#FFEE93', '#99FF99', '#ffef82', '#274C77', '#5C5346', '#A64253', 'fbcc76'];
+	var MUTANT_COLORS = ['#FFEE93', '#99FF99', '#ffef82', '#274C77', '#5C5346', '#A64253', '#fbcc76'];
 	
 	var Simulation = function () {
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
@@ -144,7 +144,7 @@
 	      this.prey = [];
 	      this.steps = 0;
 	      this.mutantIdx = 0;
-	      this.generation = 0;
+	      this.generation = -1;
 	      this.data = null;
 	
 	      while (this.prey.length < this.initialPrey) {
