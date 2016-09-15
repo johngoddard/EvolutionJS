@@ -826,19 +826,13 @@
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
-	          color: '#50BDD8',
-	          marker: {
-	            enabled: true
-	          }
+	          color: '#50BDD8'
 	        }, {
 	          name: 'Predators',
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
-	          color: '#F25F5C',
-	          marker: {
-	            enabled: true
-	          }
+	          color: '#F25F5C'
 	        }]
 	      });
 	    }
