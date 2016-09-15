@@ -104,6 +104,7 @@
 .slider-cont{
   margin-right: 10px;
   padding-top: 20px;
+  position: relative;
 }
 
 .slider-cont:first-child{
@@ -356,4 +357,47 @@ body{
   background: #fbcc76;
   margin-left: 5px;
   margin-right: 9px;
+}
+
+.tool-arrow{
+  position: absolute;
+  background-color: #555;
+  height: 16px;
+  width: 16px;
+  transform: rotate(45deg);
+  top: 11px;
+  left: -7px;
+  background: #333;
+  opacity: .95;
+}
+
+.tool-tip {
+  position: absolute;
+  z-index: 1;
+  background: #333;
+  color: #eee;
+  border-radius: 5px;
+  padding: 15px;
+  top: 10px;
+  left: 26px;
+  width: 200px;
+  font-size: 13px;
+  opacity: .95;
+  display: none;
+}
+
+#first-tip{
+  top: 0px;
+}
+
+.tool-wrap:hover .tool-tip{
+    display: block;
+}
+
+.tool-wrap{
+  display: inline-block;
+}
+
+tool-wrap > span{
+  color: #333;
 }

@@ -34,7 +34,17 @@
         <span>Simulation Settings</span>
         <div class='sliders'>
           <div class='slider-cont'>
+
+            <div class='tool-wrap'>
+              <span class='glyphicon glyphicon-question-sign'></span>
+              <div class='tool-tip' id='first-tip'>
+                <div class='tool-arrow'></div>
+                Change how frequently prey offspring are mutants with significantly different speeds than their parents
+              </div>
+            </div>
+
             <label id='mut-label'> Mutation Rate:  <span class='label-val' id='mut-val'>4%<span></label>
+
             <input
               id='mut-slider'
               class='slider-control'
@@ -48,6 +58,14 @@
           </div>
 
           <div class='slider-cont'>
+            <div class='tool-wrap'>
+              <span class='glyphicon glyphicon-question-sign'></span>
+              <div class='tool-tip'>
+                <div class='tool-arrow'></div>
+                Change how long it takes each generation of prey to reproduce
+              </div>
+            </div>
+
             <label id='gen-label'> Prey generation time: <span class='label-val' id='gen-val'>4<span></label>
             <input
               id='gen-slider'
@@ -62,6 +80,13 @@
           </div>
 
           <div class='slider-cont'>
+            <div class='tool-wrap'>
+              <span class='glyphicon glyphicon-question-sign'></span>
+              <div class='tool-tip'>
+                <div class='tool-arrow'></div>
+                Change how fast predators move. Use this to control the selective pressure on prey speed.
+              </div>
+            </div>
             <label id='speed-label'>Predator speed: <span class='label-val' id='speed-val'>2.7<span></label>
             <input
               id='speed-slider'
@@ -76,6 +101,13 @@
           </div>
 
           <div class='slider-cont'>
+            <div class='tool-wrap'>
+              <span class='glyphicon glyphicon-question-sign'></span>
+              <div class='tool-tip'>
+                <div class='tool-arrow'></div>
+                Change the how quickly the simulation runs
+              </div>
+            </div>
             <label id='sim-speed-label'>Simulation speed: <span class='label-val' id='sim-val'>1x<span></label>
             <input
               id='sim-speed-slider'
