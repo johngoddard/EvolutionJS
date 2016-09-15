@@ -61,4 +61,4 @@ There a few features I'd eventually like to add EvolutionJS to make it more robu
 - Improved graphics: More predator/prey specific graphics could make it easier to understand what the simulation is and what's happening.
 
 [prodlink]: https://johngoddard.github.io/EvolutionJS/
-[home page]: ./docs/screenshots/evolvejs.png "EvolutionJS home page"
+[home page]: ./docs/screenshots/evolutionjs.png "EvolutionJS home page"
