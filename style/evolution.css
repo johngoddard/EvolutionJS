@@ -205,7 +205,6 @@ body{
 }
 
 .about-modal-overlay{
-  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -216,7 +215,7 @@ body{
 }
 
 .about-modal{
-  width: 600px;
+  width: 570px;
   border-radius: 10px;
   border: 1px #ccc solid;
   background: white;
@@ -247,6 +246,7 @@ body{
   padding: 10px 0;
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
+  color: #71b871;
 }
 
 .about-modal ul{
@@ -263,7 +263,7 @@ body{
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  background: red;
+  background: #F25F5C;
 }
 
 .sample-prey{
@@ -271,11 +271,11 @@ body{
   border-radius: 50%;
   width: 10px;
   height: 10px;
-  background: blue;
+  background: #50BDD8;
 }
 
 #mut{
-  background: green;
+  background: #fbcc76;
 }
 
 .mdl-content{
@@ -301,4 +301,9 @@ body{
   height: 100%;
   line-height: 100%;
   color: #99ff99;
+}
+
+.slider-cont > label{
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
 }

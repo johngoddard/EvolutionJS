@@ -103,7 +103,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var MUTANT_COLORS = ['green', 'aqua', 'bisque', 'violet', 'chartreuse', 'deeppink', 'orange'];
+	var MUTANT_COLORS = ['#FFEE93', '#99FF99', '#ffef82', '#274C77', '#5C5346', '#A64253', 'fbcc76'];
 	
 	var Simulation = function () {
 	  function Simulation(dimX, dimY, initialPred, initialPrey) {
@@ -148,7 +148,7 @@
 	      this.data = null;
 	
 	      while (this.prey.length < this.initialPrey) {
-	        this.addPrey(2, 'blue', 'original');
+	        this.addPrey(2, '#50BDD8', 'original');
 	      }
 	
 	      while (this.predators.length < this.initialPredators) {
@@ -179,7 +179,7 @@
 	        pos: this.randomPosition(),
 	        speed: this.predatorSpeed,
 	        radius: 10,
-	        color: 'red',
+	        color: '#F25F5C',
 	        simulation: this,
 	        mutationRate: .03
 	      }));
@@ -816,6 +816,7 @@
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
+	          color: '#50BDD8',
 	          marker: {
 	            enabled: true
 	          }
@@ -824,6 +825,7 @@
 	          data: function () {
 	            return [[0, 100]];
 	          }(),
+	          color: '#F25F5C',
 	          marker: {
 	            enabled: true
 	          }
@@ -896,6 +898,7 @@
 	        },
 	        series: [{
 	          name: 'Average Speed',
+	          color: '#71b871',
 	          data: function () {
 	            return [[0, 2]];
 	          }()
@@ -931,6 +934,7 @@
 	    this.ctx = ctx;
 	    this.maxGen = 0;
 	    this.status = 'paused';
+	    this.simulationSpeed = 1;
 	    this.graphID;
 	    this.simulationID;
 	
@@ -967,7 +971,7 @@
 	      var _this2 = this;
 	
 	      $('#mut-slider').on('input', function (e) {
-	        $('#mut-label').text('Mutation Rate: ' + Math.floor(e.currentTarget.value * 100) + '%');
+	        $('#mut-val').text(Math.floor(e.currentTarget.value * 100) + '%');
 	      });
 	
 	      $('#mut-slider').on('change', function (e) {
@@ -976,7 +980,7 @@
 	      });
 	
 	      $('#gen-slider').on('input', function (e) {
-	        $('#gen-label').text('Prey generation time: ' + e.currentTarget.value);
+	        $('#gen-val').text('' + e.currentTarget.value);
 	      });
 	
 	      $('#gen-slider').on('change', function (e) {
@@ -985,7 +989,7 @@
 	      });
 	
 	      $('#speed-slider').on('input', function (e) {
-	        $('#speed-label').text('Predator speed: ' + e.currentTarget.value);
+	        $('#speed-val').text('' + e.currentTarget.value);
 	      });
 	
 	      $('#speed-slider').on('change', function (e) {
@@ -994,7 +998,7 @@
 	      });
 	
 	      $('#sim-speed-slider').on('input', function (e) {
-	        $('#sim-speed-label').text('Simulation speed: ' + e.currentTarget.value + 'x');
+	        $('#sim-val').text(e.currentTarget.value + 'x');
 	      });
 	
 	      $('#sim-speed-slider').on('change', function (e) {
@@ -1028,19 +1032,22 @@
 	  }, {
 	    key: 'setSimulationSpeed',
 	    value: function setSimulationSpeed(speed) {
+	      this.simulationSpeed = speed;
+	
 	      var view = this;
 	
 	      if (this.simulationID) {
 	        clearInterval(this.simulationID);
 	      }
 	
-	      var simInterval = 30 / speed;
-	
-	      this.simulationID = window.setInterval(function () {
-	        view.simulation.draw(view.ctx);
-	        view.simulation.step();
-	        view.checkOver();
-	      }, simInterval);
+	      if (this.status === 'playing') {
+	        var simInterval = 30 / speed;
+	        this.simulationID = window.setInterval(function () {
+	          view.simulation.draw(view.ctx);
+	          view.simulation.step();
+	          view.checkOver();
+	        }, simInterval);
+	      }
 	    }
 	  }, {
 	    key: 'checkOver',
@@ -1116,8 +1123,8 @@
 	    key: 'togglePlay',
 	    value: function togglePlay() {
 	      if (this.status === 'paused') {
-	        this.start();
 	        this.status = 'playing';
+	        this.start();
 	        $('#play-btn').text('Pause');
 	      } else {
 	        this.pause();

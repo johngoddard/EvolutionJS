@@ -34,7 +34,7 @@
           <span>Simulation Settings</span>
           <div class='sliders'>
             <div class='slider-cont'>
-              <label id='mut-label'> Mutation Rate: 4%</label>
+              <label id='mut-label'> Mutation Rate:  <span class='label-val' id='mut-val'>4%<span></label>
               <input
                 id='mut-slider'
                 class='slider-control'
@@ -48,7 +48,7 @@
             </div>
 
             <div class='slider-cont'>
-              <label id='gen-label'> Prey generation time: 4</label>
+              <label id='gen-label'> Prey generation time: <span class='label-val' id='gen-val'>4<span></label>
               <input
                 id='gen-slider'
                 class='slider-control'
@@ -62,7 +62,7 @@
             </div>
 
             <div class='slider-cont'>
-              <label id='speed-label'>Predator speed: 2.7</label>
+              <label id='speed-label'>Predator speed: <span class='label-val' id='speed-val'>2.7<span></label>
               <input
                 id='speed-slider'
                 class='slider-control'
@@ -76,7 +76,7 @@
             </div>
 
             <div class='slider-cont'>
-              <label id='sim-speed-label'>Simulation speed: 1x</label>
+              <label id='sim-speed-label'>Simulation speed: <span class='label-val' id='sim-val'>1x<span></label>
               <input
                 id='sim-speed-slider'
                 class='slider-control'
@@ -144,10 +144,10 @@
               <li>If a predator doesn't eat in a certain amount of time, it will die and disappear.</li>
               <li>After a certain amount of time, prey and predators will reproduce, and new prey and predators will appear. The longer an animal survives, the more chances it has to reproduce.</li>
               <li>Usually, a prey offspring will have a similar speed to its parent.</li>
-              <li>Occasionally, a prey offspring will have a mutation, and it's speed will be significantly differnt from its parent's. Mutant offspring <div class="sample-prey" id='mut'></div> will be a different color from their parent <div class="sample-prey"></div>.</li>
+              <li>Occasionally, a prey offspring will have a mutation, and its speed will be significantly differnt from its parent's. Mutant offspring <div class="sample-prey" id='mut'></div> will be a different color from their parent <div class="sample-prey"></div>.</li>
               <li>Prey and predator have set lifespans, and will die after a certain amount of time without being eaten or starving.</li>
             </ul>
-            <p>Watch how the prey's average fitness (speed) change in the graph on the right. You can also use the sliders to change simulation parameters. How do you think each option will affect the prey evolution?</p>
+            <p>Watch how the prey's average fitness (speed) changes in the graph on the right. You can also use the sliders to change simulation parameters. How do you think each option will affect the prey evolution?</p>
           </div>
         </div>
       </section>
