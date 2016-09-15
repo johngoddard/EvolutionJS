@@ -6,18 +6,18 @@
 
 .graph{
   display: inline-block;
-  height: 280px;
+  height: 277px;
   width: 440px;
   background: white;
-  border: 1px solid #ccc;
-  margin-bottom: 20px;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,.3);
+  margin-bottom: 21px;
 }
 
 #simulation-canvas{
   border: 1px solid #ccc;
   background: #333;
   height: 400px;
-  width: 400px;;
+  width: 400px;
 }
 .t-head{
   border-top: none !important;
@@ -52,8 +52,6 @@
   display: inline-block;
   margin-left: 40px;
   height: 100vh;
-  overflow-y: scroll;
-  over
 }
 
 
@@ -69,13 +67,14 @@
   display: inline-block;
 }
 
+
 .table-cont{
   height: 160px;
   width: 400px;
-  border: 1px solid #ccc;
   padding: 0 10px;
   background: white;
   margin-bottom: 10px;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,.3);
 }
 
 .table-cont span{
@@ -84,6 +83,10 @@
   text-align: center;
   padding: 10px 0;
 
+}
+
+#top-strains td, #top-strains th{
+  text-align: center;
 }
 
 .ui-slider-handle{
@@ -303,6 +306,7 @@ body{
 
 .ex-text{
   padding: 10px 37px;
+  text-shadow: 2px 2px 8px #333;
 }
 
 .logo-img{

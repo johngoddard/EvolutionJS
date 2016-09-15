@@ -148,7 +148,7 @@
 	      this.data = null;
 	
 	      while (this.prey.length < this.initialPrey) {
-	        this.addPrey(2, '#50BDD8', 'original');
+	        this.addPrey(2, '#50BDD8', 'Original');
 	      }
 	
 	      while (this.predators.length < this.initialPredators) {
@@ -285,12 +285,12 @@
 	          if (mutationNum > 1 - simulation.mutationRate / 2) {
 	            _this.mutantIdx += 1;
 	            var newSpeed = preyObj.speed + .25;
-	            var strainName = 'strain-' + _this.mutantIdx;
+	            var strainName = 'Mutant-' + _this.mutantIdx;
 	            _this.addPrey(newSpeed, MUTANT_COLORS[_this.mutantIdx % MUTANT_COLORS.length], strainName);
 	          } else if (mutationNum < simulation.mutationRate / 2) {
 	            _this.mutantIdx += 1;
 	            var _newSpeed = preyObj.speed - .25;
-	            var _strainName = 'strain-' + _this.mutantIdx;
+	            var _strainName = 'Mutant-' + _this.mutantIdx;
 	            _this.addPrey(_newSpeed, MUTANT_COLORS[(_this.mutantIdx % MUTANT_COLORS.length, _strainName)]);
 	          } else {
 	            var _newSpeed2 = preyObj.speed + .1 * (.5 - Math.random());
@@ -451,7 +451,7 @@
 	  _createClass(Prey, [{
 	    key: 'setVelocity',
 	    value: function setVelocity() {
-	      if (this.steps % 15 === 0 || this.steps < 10) {
+	      if (this.steps % 15 === 0 || this.velocity[0] === 0 && this.velocity[1] === 0) {
 	        var closestPred = this.findClosestPredator();
 	        var dir = UTIL.findDirection(this.position, closestPred.position);
 	        this.velocity = [-this.speed * dir[0], -this.speed * dir[1]];
@@ -572,15 +572,17 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var SIM_WIDTH = 500;
+	
 	var diff = exports.diff = function diff(pos1, pos2, dir) {
 	
 	  var idx = dir === 'x' ? 0 : 1;
 	
-	  if (Math.abs(pos2[idx] - pos1[idx]) > 250) {
-	    if (pos2[idx] > 250) {
-	      return pos2[idx] - 500 - pos1[idx];
+	  if (Math.abs(pos2[idx] - pos1[idx]) > SIM_WIDTH / 2) {
+	    if (pos2[idx] > SIM_WIDTH / 2) {
+	      return pos2[idx] - SIM_WIDTH - pos1[idx];
 	    } else {
-	      return 500 + pos2[idx] - pos1[idx];
+	      return SIM_WIDTH + pos2[idx] - pos1[idx];
 	    }
 	  } else {
 	    return pos2[idx] - pos1[idx];
@@ -590,13 +592,13 @@
 	var dir = exports.dir = function dir(pos1, pos2, _dir) {
 	  var idx = _dir === 'x' ? 0 : 1;
 	  if (pos1[idx] < pos2[idx]) {
-	    if (pos2[idx] - pos1[idx] < pos1[idx] + 500 - pos2[idx]) {
+	    if (pos2[idx] - pos1[idx] < pos1[idx] + SIM_WIDTH - pos2[idx]) {
 	      return 1;
 	    } else {
 	      return -1;
 	    }
 	  } else {
-	    if (pos1[idx] - pos2[idx] < pos2[idx] + 500 - pos1[idx]) {
+	    if (pos1[idx] - pos2[idx] < pos2[idx] + SIM_WIDTH - pos1[idx]) {
 	      return -1;
 	    } else {
 	      return 1;
@@ -666,7 +668,7 @@
 	  _createClass(Predator, [{
 	    key: 'setVelocity',
 	    value: function setVelocity() {
-	      if (this.steps % 5 === 0 || this.steps < 10) {
+	      if (this.steps % 5 === 0 || this.velocity[0] === 0 && this.velocity[1] === 0) {
 	        var closestPred = this.findClosestPrey();
 	        var dir = UTIL.findDirection(this.position, closestPred.position);
 	
@@ -755,6 +757,9 @@
 	          type: 'spline',
 	          animation: Highcharts.svg,
 	          marginRight: 10,
+	          style: {
+	            fontFamily: "'Roboto', sans-serif"
+	          },
 	          events: {
 	            load: function load() {
 	              var preySeries = this.series[0];
@@ -808,7 +813,7 @@
 	          floating: true,
 	          verticalAlign: 'top',
 	          x: 0,
-	          y: 7
+	          y: 9
 	        },
 	        exporting: {
 	          enabled: false
@@ -845,6 +850,9 @@
 	      $('#fit-graph').highcharts({
 	        chart: {
 	          type: 'spline',
+	          style: {
+	            fontFamily: "'Roboto', sans-serif"
+	          },
 	          animation: Highcharts.svg,
 	          marginRight: 10,
 	          events: {
@@ -1191,7 +1199,7 @@
 	    key: 'resetStrainTable',
 	    value: function resetStrainTable() {
 	      $('#top-strains-body').empty();
-	      $('#top-strains-body').append('<tr>\n        <td>\n          <div class="strain-key" style="background:blue"></div>\n          original\n        </td>\n        <td>30</td>\n        <td>2</td>\n      </tr>');
+	      $('#top-strains-body').append('<tr>\n        <td>\n          <div class="strain-key" style="background:blue"></div>\n          Original\n        </td>\n        <td>30</td>\n        <td>2</td>\n      </tr>');
 	
 	      $('#table-title').text('Top strains: Generation 0');
 	    }
