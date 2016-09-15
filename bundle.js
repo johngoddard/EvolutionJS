@@ -805,7 +805,7 @@
 	        },
 	        tooltip: {
 	          formatter: function formatter() {
-	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y.toFixed(2) + ' %');
+	            return '<b>' + (this.series.name + ' Population') + '</b><br/>' + ('Generation: ' + this.x) + '<br/>' + ('Relative population: ' + this.y.toFixed(1) + ' %');
 	          }
 	        },
 	        legend: {
