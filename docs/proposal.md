@@ -21,7 +21,7 @@ The following are the core pieces of functionality:
 - [x] A controls area where users can change simulation settings
 - [x] Live updating charts
 - [x] A brief introduction or explanatory modal
-- [ ] Production Readme
+- [x] Production Readme
 
 ### Wireframes
 
@@ -75,7 +75,7 @@ In addition to the webpack entry file, there will be four scripts involved in th
 **Day 4**: Add simulation controls.  Style the frontend, and add an introdution:
 
 - [x] Create controls for simulation speed, mutation rate, and generation time
-- [ ] Syle objects
+- [x] Syle objects
 - [x] Add an information modal.
 
 
@@ -84,7 +84,7 @@ In addition to the webpack entry file, there will be four scripts involved in th
 There are many directions this cellular automata engine could eventually go.  Some anticipated updates are:
 
 - [ ] Animated introduction
-- [ ] More simulation controls
+- [x] More simulation controls
 - [ ] Evolving predators
 
 [wireframes]: ./evolutionjs.png
