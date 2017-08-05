@@ -48,7 +48,7 @@ Note that the population graph shows populations relative to the species' initia
 
 Users can update simulation parameters and play/pause the simulation using sliders and buttons in the control panels. JQuery event listeners are used to handle relevant changes to the DOM, as well as various modals and tooltips that appear as users interact with the page.
 
-##Future directions
+## Future directions
 
 There a few features I'd eventually like to add EvolutionJS to make it more robust:
 
